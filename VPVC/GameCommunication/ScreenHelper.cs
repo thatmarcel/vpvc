@@ -1,40 +1,53 @@
-﻿using System.Drawing;
+﻿using System.Windows.Forms;   // also requires a reference to this assembly
+using System.Drawing;
+using System.Collections.Generic;
 using System.Management;
+using Windows.UI.ViewManagement;
 
 #pragma warning disable CA1416
 
 namespace VPVC.GameCommunication;
 
 public static class ScreenHelper {
-    public static Bitmap? TakeScreenshot() {
-        // return LoadScreenshotFromFile();
+    private static string? selectedScreenDeviceId;
+    
+    public static List<ScreenInfo> GetScreens() {
+        ManagementObjectSearcher displayRecordSearcher = new ManagementObjectSearcher("SELECT CurrentHorizontalResolution, CurrentVerticalResolution, DeviceID, Name, CurrentRefreshRate FROM Win32_VideoController");
 
-        uint horizontalResolution = 0;
-        uint verticalResolution = 0;
+        var screens = new List<ScreenInfo>();
+
+        foreach (var screen in Screen.AllScreens) {
+            var screenDisplayName = $"Screen {screen.DeviceName.Replace("\\\\.\\DISPLAY", "")} ({(screen.Primary ? "Primary, " : "")}{screen.Bounds.Width}x{screen.Bounds.Height})";
+            screens.Add(new ScreenInfo(screen.DeviceName, screenDisplayName));
+        }
         
-        ManagementObjectSearcher displayResolutionRecordSearcher = new ManagementObjectSearcher("SELECT CurrentHorizontalResolution, CurrentVerticalResolution FROM Win32_VideoController");
-        foreach (var displayResolutionRecordObject in displayResolutionRecordSearcher.Get()) {
-            var displayResolutionRecord = (ManagementObject) displayResolutionRecordObject;
-            horizontalResolution = (uint) displayResolutionRecord["CurrentHorizontalResolution"];
-            verticalResolution = (uint) displayResolutionRecord["CurrentVerticalResolution"];
+       return screens;
+    }
+
+    public static void SelectScreenWithDeviceId(string deviceId) {
+        selectedScreenDeviceId = deviceId;
+    }
+    
+    public static Bitmap? TakeScreenshot() {
+        Screen? selectedScreen = null;
+        
+        foreach (var screen in Screen.AllScreens) {
+            if (screen.DeviceName != selectedScreenDeviceId) {
+                continue;
+            }
+
+            selectedScreen = screen;
+
             break;
         }
 
-        if (horizontalResolution == 0 || verticalResolution == 0) {
+        if (selectedScreen == null) {
             return null;
         }
         
-        Bitmap screenshotBitmap = new Bitmap((int) horizontalResolution, (int) verticalResolution);
+        Bitmap screenshotBitmap = new Bitmap(selectedScreen.Bounds.Width, selectedScreen.Bounds.Height);
         Graphics gr = Graphics.FromImage(screenshotBitmap);
-        gr.CopyFromScreen(0, 0, 0, 0, screenshotBitmap.Size);
+        gr.CopyFromScreen(selectedScreen.Bounds.X, selectedScreen.Bounds.Y, 0, 0, screenshotBitmap.Size);
         return screenshotBitmap;
-    }
-
-    private static Bitmap? LoadScreenshotFromFile() {
-        try {
-            return (Bitmap) Image.FromFile(@"C:\Users\mrcl\Pictures\Screenshots\Screenshot 2023-03-03 190339.png", true);
-        } catch (System.IO.FileNotFoundException) {
-            return null;
-        }
     }
 }

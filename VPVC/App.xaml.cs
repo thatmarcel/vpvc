@@ -31,7 +31,7 @@ public partial class App: Application {
             for (;;) {
                 MessageReceiver.ProcessNextMessage();
             }
-            
+
             // ReSharper disable once FunctionNeverReturns
         });
         

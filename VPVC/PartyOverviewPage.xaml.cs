@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.UI.Xaml;
@@ -20,7 +21,9 @@ public sealed partial class PartyOverviewPage: Page {
         ApplicationState.partyOverviewInformationChanged += HandlePartyOverviewInformationChanged;
 
         DebuggingInformationHelper.informationHasBeenUpdated += () => {
-            debuggingInformationTextBlock.Text = DebuggingInformationHelper.infoText;
+            try {
+                debuggingInformationTextBlock.Text = DebuggingInformationHelper.infoText;
+            } catch (Exception) {}
         };
     }
 

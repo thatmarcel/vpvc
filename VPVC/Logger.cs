@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
-namespace VPVC; 
+namespace VPVC;
 
-public class Logger {
+public static class Logger {
     public static void Log(string message) {
-        Debug.WriteLine($"[VPVC] {message}");
+        try {
+            Debug.WriteLine($"[VPVC] {message}");
+        } catch (Exception) {}
     }
 }
