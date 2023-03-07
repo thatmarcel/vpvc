@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VPVC (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "VPVC (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

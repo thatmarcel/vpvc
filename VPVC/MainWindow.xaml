@@ -1,0 +1,18 @@
+<local:MicaWindow
+    x:Class="VPVC.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VPVC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="VPVC" FontWeight="700" FontSize="32" Margin="32 4 32 0" x:Name="titleTextBlock" />
+        
+        <local:BasicIntroductionPage Margin="32 24 32 32" x:Name="basicIntroductionPage" Visibility="Visible" />
+        <local:BasicUserInformationConfigurationPage Margin="32 24 32 32" x:Name="basicUserInformationConfigurationPage" Visibility="Collapsed" />
+        <local:PartyJoinOrCreatePage Margin="32 24 32 32" x:Name="partyJoinOrCreatePage" Visibility="Collapsed" />
+        <local:PartyOverviewPage Margin="32 24 32 32" x:Name="partyOverviewPage" Visibility="Collapsed" />
+    </StackPanel>
+</local:MicaWindow>
