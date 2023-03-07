@@ -8,7 +8,13 @@ namespace VPVC.GameCommunication;
 public static class GameStateAndCoordinatesExtractor {
     public static void StartRepeatedExtraction() {
         var timer = new System.Timers.Timer();
-        timer.Elapsed += (_, _) => Execute();
+        timer.Elapsed += (_, _) => {
+            try {
+                Execute();
+            } catch (Exception exception) {
+                Logger.Log(exception.ToString());
+            }
+        };
         timer.Interval = Config.gameCoordinateExtractionIntervalInMilliseconds;
         timer.Start();
     }
