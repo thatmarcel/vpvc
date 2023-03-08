@@ -27,7 +27,10 @@ public class VoiceChatConnection {
         var configuration = new RTCConfiguration {
             iceServers = new List<RTCIceServer> {
                 new RTCIceServer {
-                    urls = "stun:stun.l.google.com:19302"
+                    urls = "turn:relay.metered.ca:80",
+                    username = "aab3ff574eb56d5bf2679c69",
+                    credentialType = RTCIceCredentialType.password,
+                    credential = "UhGWaydHP3AgQsS3"
                 }
             }
         };
@@ -90,6 +93,14 @@ public class VoiceChatConnection {
                 iceCandidateJson
             );
         };
+
+        peerConnection.onicecandidateerror += (candidate, s) => {
+            Logger.Log($"Ice candidate error ({candidate}, {s})");
+        };
+
+        peerConnection.oniceconnectionstatechange += (state) => {
+            Logger.Log($"Ice connection state changed to: {state}");
+        };
     }
 
     public void Disconnect() {
@@ -137,6 +148,7 @@ public class VoiceChatConnection {
             var decodingSuccess = RTCIceCandidateInit.TryParse(sdpContent, out var iceCandidateInit);
             
             if (!decodingSuccess) {
+                Logger.Log("ICE CANDIDATE DECODING FAILED");
                 return;
             }
             
