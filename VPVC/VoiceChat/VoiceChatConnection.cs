@@ -32,7 +32,8 @@ public class VoiceChatConnection {
                     credentialType = RTCIceCredentialType.password,
                     credential = "UhGWaydHP3AgQsS3"
                 }
-            }
+            },
+            iceTransportPolicy = RTCIceTransportPolicy.relay
         };
         peerConnection = new RTCPeerConnection(configuration);
 
