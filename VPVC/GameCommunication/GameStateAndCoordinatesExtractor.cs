@@ -37,7 +37,7 @@ public static class GameStateAndCoordinatesExtractor {
 
         if (extractedGameStateAndRelativePlayerPosition == null) {
             DebuggingInformationHelper.didLastScreenshotExtractionCompletetlyFail = true;
-            Logger.Log("Extraction completely failed.");
+            // Logger.Log("Extraction completely failed.");
             return;
         }
         

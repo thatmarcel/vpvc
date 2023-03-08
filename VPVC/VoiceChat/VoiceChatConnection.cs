@@ -27,7 +27,7 @@ public class VoiceChatConnection {
         var configuration = new RTCConfiguration {
             iceServers = new List<RTCIceServer> {
                 new RTCIceServer {
-                    urls = "stun:stun.sipsorcery.com"
+                    urls = "stun:stun.l.google.com:19302"
                 }
             }
         };
@@ -80,15 +80,15 @@ public class VoiceChatConnection {
         );
 
         peerConnection.onicecandidate += iceCandidateInit => {
-            if (peerConnection.signalingState == RTCSignalingState.have_remote_offer || peerConnection.signalingState == RTCSignalingState.stable) {
-                var iceCandidateJson = iceCandidateInit.toJSON();
+            var iceCandidateJson = iceCandidateInit.toJSON();
+            
+            Logger.Log($"Sending ice candidate: {iceCandidateJson}");
         
-                PartyEventSender.SendOutgoingWebRtcSignaling(
-                    receivingPartyParticipantId,
-                    VoiceChatSignalingMessageTypes.iceCandidate,
-                    iceCandidateJson
-                );
-            }
+            PartyEventSender.SendOutgoingWebRtcSignaling(
+                receivingPartyParticipantId,
+                VoiceChatSignalingMessageTypes.iceCandidate,
+                iceCandidateJson
+            );
         };
     }
 
@@ -106,6 +106,8 @@ public class VoiceChatConnection {
             return;
         }
         
+        Logger.Log($"Received signaling message with type: {signalingMessageType} content: {sdpContent}");
+        
         if (signalingMessageType == VoiceChatSignalingMessageTypes.sdpRemoteDescription) {
             var decodingSuccess = RTCSessionDescriptionInit.TryParse(sdpContent, out var sdpOfferSessionDescriptionInit);
 
@@ -122,6 +124,8 @@ public class VoiceChatConnection {
                 await peerConnection.setLocalDescription(sdpAnswerSessionDescriptionInit);
 
                 var sdpAnswerJson = sdpAnswerSessionDescriptionInit.toJSON();
+                
+                Logger.Log($"Sending SDP answer: {sdpAnswerJson}");
         
                 PartyEventSender.SendOutgoingWebRtcSignaling(
                     receivingPartyParticipantId,
@@ -141,7 +145,7 @@ public class VoiceChatConnection {
     }
 
     public void HandlePartyParticipantStateUpdate(Party party, PartyParticipant partyParticipant) {
-        Logger.Log($"Handling participant state update.");
+        // Logger.Log($"Handling participant state update.");
         
         if (partyParticipant.gameState == GameStates.lobby) {
             SetAudioVolume(1f);
@@ -180,7 +184,7 @@ public class VoiceChatConnection {
 
     private void SetAudioVolume(float volumeFraction) {
         var participantDisplayName = PartyManager.currentParty?.otherParticipants.FirstOrDefault(p => p.id == receivingPartyParticipantId)?.userDisplayName;
-        Logger.Log($"Setting participant (name: {participantDisplayName}) volume to {volumeFraction}");
+        // Logger.Log($"Setting participant (name: {participantDisplayName}) volume to {volumeFraction}");
         
         windowsSinkAudioEndPoint.SetOutputVolume(volumeFraction);
 
