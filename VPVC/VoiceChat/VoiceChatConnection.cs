@@ -28,22 +28,13 @@ public class VoiceChatConnection {
         var configuration = new RTCConfiguration {
             iceServers = new List<RTCIceServer> {
                 new RTCIceServer {
-                    urls = "stun:relay.metered.ca:80"
+                    urls = "stun:176.126.85.128"
                 },
                 new RTCIceServer {
-                    urls = "turn:relay.metered.ca:443",
-                    username = "aab3ff574eb56d5bf2679c69",
+                    urls = "turn:176.126.85.128",
+                    username = "1678386621",
                     credentialType = RTCIceCredentialType.password,
-                    credential = "UhGWaydHP3AgQsS3"
-                },
-                new RTCIceServer {
-                    urls = "stun:stun.l.google.com:19302"
-                },
-                new RTCIceServer {
-                    urls = "stun:stun.sipgate.net"
-                },
-                new RTCIceServer {
-                    urls = "stun:stun.services.mozilla.com"
+                    credential = "Dvzh2+6i6Mpp9z6KWHFuLWpZQu0="
                 }
             },
             iceTransportPolicy = RTCIceTransportPolicy.all
