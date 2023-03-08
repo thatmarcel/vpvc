@@ -105,18 +105,7 @@ public class NewWindowsAudioEndpoint {
     }
 
     public AudioFormat GetAudioFormat() {
-        if (waveFormat == null) {
-            return AudioFormat.Empty;
-        }
-        
-        return new AudioFormat(
-            74,
-            "VPVC-DAF",
-            waveFormat.SampleRate,
-            waveFormat.SampleRate,
-            waveFormat.Channels,
-            null
-        );
+        return new AudioFormat(SDPWellKnownMediaFormatsEnum.G722);
     }
 
     private void InitializePlaybackDevice() {

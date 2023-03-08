@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SIPSorcery;
 using SIPSorcery.Net;
 using VPVC.BackendCommunication;
 using VPVC.BackendCommunication.Shared;
@@ -27,15 +28,17 @@ public class VoiceChatConnection {
         var configuration = new RTCConfiguration {
             iceServers = new List<RTCIceServer> {
                 new RTCIceServer {
-                    urls = "turn:relay.metered.ca:80",
+                    urls = "turn:relay.metered.ca:443",
                     username = "aab3ff574eb56d5bf2679c69",
                     credentialType = RTCIceCredentialType.password,
                     credential = "UhGWaydHP3AgQsS3"
                 }
             },
-            iceTransportPolicy = RTCIceTransportPolicy.relay
+            iceTransportPolicy = RTCIceTransportPolicy.all
         };
         peerConnection = new RTCPeerConnection(configuration);
+        var factory = new WebRtcDebugLoggerFactory();
+        LogFactory.Set(factory);
 
         MediaStreamTrack sendingAudioTrack = new MediaStreamTrack(windowsSourceAudioEndPoint.GetAudioFormat(), MediaStreamStatusEnum.SendOnly);
         peerConnection.addTrack(sendingAudioTrack);
@@ -101,6 +104,10 @@ public class VoiceChatConnection {
 
         peerConnection.oniceconnectionstatechange += (state) => {
             Logger.Log($"Ice connection state changed to: {state}");
+        };
+        
+        peerConnection.onicegatheringstatechange += (state) => {
+            Logger.Log($"Ice gathering state changed to: {state}");
         };
     }
 
