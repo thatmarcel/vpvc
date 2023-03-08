@@ -37,7 +37,7 @@ public class VoiceChatConnection {
                     credential = "Dvzh2+6i6Mpp9z6KWHFuLWpZQu0="
                 }
             },
-            iceTransportPolicy = RTCIceTransportPolicy.all
+            iceTransportPolicy = RTCIceTransportPolicy.relay
         };
         peerConnection = new RTCPeerConnection(configuration);
         var factory = new WebRtcDebugLoggerFactory();
@@ -112,6 +112,8 @@ public class VoiceChatConnection {
         peerConnection.onicegatheringstatechange += (state) => {
             Logger.Log($"Ice gathering state changed to: {state}");
         };
+
+        peerConnection.onnegotiationneeded += () => { Logger.Log("WebRTC negotiation needed"); };
     }
 
     public void Disconnect() {
