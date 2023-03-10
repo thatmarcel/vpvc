@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>VPVC (Unpackaged)</ActiveDebugProfile>
-    <_LastSelectedProfileId>C:\Users\mrcl\Documents\Projects\VPVC\VPVC\Properties\PublishProfiles\win10-x86.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Users\mrcl\Documents\Projects\VPVC\VPVC\Properties\PublishProfiles\win10-x64.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
     <None Update="App.xaml">

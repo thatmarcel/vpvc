@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using VPVC.BackendCommunication;

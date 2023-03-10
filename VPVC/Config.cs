@@ -19,5 +19,5 @@ public static class Config {
     public static readonly int voiceChatBackendServerPort = 4719;
     
     public static readonly int fullVolumeHearingRadius = 6;
-    public static readonly int maxHearingRadius = 20;
+    public static readonly int maxHearingRadius = 16;
 }
