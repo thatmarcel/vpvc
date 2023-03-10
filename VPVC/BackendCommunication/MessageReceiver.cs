@@ -20,7 +20,6 @@ public static class MessageReceiver {
         { MessageTypes.partyJoinResult, new PartyJoinResultMessageHandler() },
         { MessageTypes.partyParticipantsChange, new PartyParticipantsChangeMessageHandler() },
         { MessageTypes.partyParticipantStatesUpdate, new PartyParticipantStatesUpdateMessageHandler() },
-        { MessageTypes.incomingWebRtcSignalingMessage, new IncomingWebRtcSignalingMessageHandler() },
         { MessageTypes.changeTeamResult, new ChangeTeamResultMessageHandler() }
     };
 

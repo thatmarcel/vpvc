@@ -12,8 +12,11 @@ public static class Config {
 
     public static readonly int gameCoordinateExtractionIntervalInMilliseconds = 500;
 
-    public static readonly string serverHostname = "backend.vpvc.app";
-    public static readonly int serverPort = 443;
+    public static readonly string backendServerHostname = "backend.vpvc.app";
+    public static readonly int backendServerPort = 443;
+    
+    public static readonly string voiceChatBackendServerHostname = "backend.vpvc.app";
+    public static readonly int voiceChatBackendServerPort = 4719;
     
     public static readonly int fullVolumeHearingRadius = 6;
     public static readonly int maxHearingRadius = 20;

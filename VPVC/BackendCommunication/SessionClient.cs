@@ -15,7 +15,7 @@ public class SessionClient: WssClient {
 
     public override void OnWsConnecting(HttpRequest request) {
         request.SetBegin("GET", "/");
-        request.SetHeader("Host", Config.serverHostname);
+        request.SetHeader("Host", Config.backendServerHostname);
         request.SetHeader("Upgrade", "websocket");
         request.SetHeader("Origin", "http://localhost");
         request.SetHeader("Connection", "Upgrade");

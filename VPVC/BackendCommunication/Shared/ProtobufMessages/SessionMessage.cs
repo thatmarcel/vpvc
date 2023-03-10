@@ -28,20 +28,14 @@ public class SessionMessage {
     public SelfStateUpdateMessageContent? selfStateUpdateMessageContent { get; set; }
     
     [ProtoMember(8)]
-    public OutgoingWebRtcSignalingMessageContent? outgoingWebRtcSignalingMessageContent { get; set; }
-    
-    [ProtoMember(9)]
-    public IncomingWebRtcSignalingMessageContent? incomingWebRtcSignalingMessageContent { get; set; }
-    
-    [ProtoMember(10)]
     public PartyParticipantsChangeMessageContent? partyParticipantsChangeMessageContent { get; set; }
     
-    [ProtoMember(11)]
+    [ProtoMember(9)]
     public PartyParticipantStatesUpdateMessageContent? partyParticipantStatesUpdateMessageContent { get; set; }
     
-    [ProtoMember(12)]
+    [ProtoMember(10)]
     public ChangeTeamMessageContent? changeTeamMessageContent { get; set; }
     
-    [ProtoMember(13)]
+    [ProtoMember(11)]
     public ChangeTeamResultMessageContent? changeTeamResultMessageContent { get; set; }
 }

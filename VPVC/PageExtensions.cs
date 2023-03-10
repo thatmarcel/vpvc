@@ -17,6 +17,6 @@ public static class PageExtensions {
             XamlRoot = window.Content.XamlRoot
         };
 
-        dialog.ShowAsync();
+        _ = dialog.ShowAsync();
     }
 }

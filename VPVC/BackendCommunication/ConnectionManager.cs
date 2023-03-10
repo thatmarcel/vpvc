@@ -15,7 +15,7 @@ public class ConnectionManager {
         
         var sslContext = new SslContext();
 
-        var dnsEndPoint = new DnsEndPoint(Config.serverHostname, Config.serverPort, AddressFamily.InterNetwork);
+        var dnsEndPoint = new DnsEndPoint(Config.backendServerHostname, Config.backendServerPort, AddressFamily.InterNetwork);
         
         sessionClient = new(sslContext, dnsEndPoint);
         sessionClient.ConnectAsync();

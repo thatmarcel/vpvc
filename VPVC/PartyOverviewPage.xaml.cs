@@ -36,10 +36,6 @@ public sealed partial class PartyOverviewPage: Page {
 
         joinCodeTextBlock.Text = party.joinCode;
 
-        foreach (var participant in party.otherParticipants) {
-            Logger.Log(participant.userDisplayName + ", team: " + participant.teamIndex);
-        }
-
         var newTeamOnePlayerNames = party.otherParticipants
             .Where(participant => participant.teamIndex == 0)
             .Select(participant => $"{participant.userDisplayName}{(participant.isPartyLeader ? " (leader)" : "")}")

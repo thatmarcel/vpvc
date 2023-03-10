@@ -13,7 +13,7 @@ public delegate void AppEmptyCallback();
 public partial class App: Application {
     private Window? mainWindow;
 
-    private static DispatcherQueue dispatcherQueue;
+    private static DispatcherQueue? dispatcherQueue;
         
     public App() {
         InitializeComponent();
@@ -39,7 +39,7 @@ public partial class App: Application {
     }
 
     public static void RunInForeground(AppEmptyCallback callback) {
-        if (dispatcherQueue.HasThreadAccess) {
+        if (dispatcherQueue?.HasThreadAccess ?? false) {
             try {
                 callback.Invoke();
             } catch (Exception exception) {
@@ -47,7 +47,7 @@ public partial class App: Application {
                 Logger.Log(exception.ToString());
             }
         } else {
-            var success = dispatcherQueue.TryEnqueue(callback.Invoke);
+            var success = dispatcherQueue?.TryEnqueue(callback.Invoke) ?? false;
 
             if (!success) {
                 DebuggingInformationHelper.hasEnqueuingInForegroundEverFailed = true;

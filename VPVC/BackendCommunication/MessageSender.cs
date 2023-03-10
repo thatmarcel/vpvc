@@ -20,8 +20,6 @@ public static class MessageSender {
                 serializedMessageBytes = stream.ToArray();
             }
             
-            Logger.Log(BitConverter.ToString(serializedMessageBytes));
-            
             ConnectionManager.sessionClient?.SendBinary(serializedMessageBytes);
         });
     }

@@ -1,6 +1,6 @@
-﻿using NAudio.Wave;
-using SIPSorcery.Media;
-using SIPSorceryMedia.Abstractions;
+﻿using System;
+using NAudio.Wave;
+using OpusDotNet;
 
 namespace VPVC.VoiceChat;
 
@@ -8,10 +8,9 @@ public delegate void NewWindowsAudioEndpointHasNewSamples(byte[] samples);
 
 public class NewWindowsAudioEndpoint {
     public event NewWindowsAudioEndpointHasNewSamples? hasNewSamples;
-
-    private int audioEncodingBitCount = 17;
-    private int audioSampleRate = 44100;
-    private int audioChannelCount = 1;
+    
+    private int audioSampleRate = 48000;
+    private int audioChannelCount = 2;
 
     private WaveInEvent? waveInEvent;
     private WaveOutEvent? waveOutEvent;
@@ -30,11 +29,22 @@ public class NewWindowsAudioEndpoint {
     private readonly bool isSourceEnabled;
     private readonly bool isSinkEnabled;
 
+    private OpusEncoder opusEncoder;
+    private OpusDecoder opusDecoder;
+
+    private readonly int byteCountPerFrame = 400;
+
     public NewWindowsAudioEndpoint(bool isSourceEnabled = true, bool isSinkEnabled = true) {
         this.isSourceEnabled = isSourceEnabled;
         this.isSinkEnabled = isSinkEnabled;
 
-        waveFormat = new WaveFormat();
+        waveFormat = new WaveFormat(audioSampleRate, audioChannelCount);
+
+        opusEncoder = new OpusEncoder(Application.VoIP, audioSampleRate, audioChannelCount) {
+            VBR = true
+        };
+        
+        opusDecoder = new OpusDecoder(audioSampleRate, audioChannelCount);
 
         // audioFormatManager.SetSelectedFormat(audioEncoder.SupportedFormats.MaxBy(x => x.ClockRate));
 
@@ -50,7 +60,6 @@ public class NewWindowsAudioEndpoint {
             waveInEvent = new WaveInEvent();
             waveInEvent.WaveFormat = waveFormat;
             waveInEvent.BufferMilliseconds = 20;
-            waveInEvent.NumberOfBuffers = 2;
             waveInEvent.DeviceNumber = audioInputDeviceIndex;
             waveInEvent.DataAvailable += HandleLocalAudioSampleAvailable;
         }
@@ -100,31 +109,31 @@ public class NewWindowsAudioEndpoint {
         if (waveProvider == null) {
             return;
         }
-        
-        waveProvider.AddSamples(payload, 0, payload.Length);
-    }
 
-    public AudioFormat GetAudioFormat() {
-        return new AudioFormat(SDPWellKnownMediaFormatsEnum.G722);
+        var decodedBytes = new byte[6000];
+        var decodedLength = opusDecoder.Decode(payload, payload.Length, decodedBytes, decodedBytes.Length);
+        
+        Array.Resize(ref decodedBytes, decodedLength);
+        
+        waveProvider.AddSamples(decodedBytes, 0, decodedLength);
     }
 
     private void InitializePlaybackDevice() {
         waveOutEvent?.Stop();
         waveOutEvent = new WaveOutEvent();
+        waveOutEvent.DesiredLatency = 60;
         waveOutEvent.DeviceNumber = audioOutputDeviceIndex;
         waveProvider = new BufferedWaveProvider(waveFormat);
         waveProvider.DiscardOnBufferOverflow = true;
         waveOutEvent?.Init(waveProvider);
     }
 
-    // private long lastAudioSampleTimestamp = -1;
-
     private void HandleLocalAudioSampleAvailable(object? sender, WaveInEventArgs args) {
-        /* var diff = (DateTime.Now.ToFileTime() - lastAudioSampleTimestamp) / 10000;
-        lastAudioSampleTimestamp = DateTime.Now.ToFileTime();
+        var encodedBytes = new byte[byteCountPerFrame];
+        var encodedLength = opusEncoder.Encode(args.Buffer, args.BytesRecorded, encodedBytes, encodedBytes.Length);
         
-        Logger.Log($"Milliseconds since last audio sample: {diff}"); */
+        Array.Resize(ref encodedBytes, encodedLength);
         
-        hasNewSamples?.Invoke(args.Buffer);
+        hasNewSamples?.Invoke(encodedBytes);
     }
 }

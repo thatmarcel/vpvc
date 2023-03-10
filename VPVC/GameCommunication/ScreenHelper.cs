@@ -1,8 +1,7 @@
-﻿using System.Windows.Forms;   // also requires a reference to this assembly
-using System.Drawing;
+﻿using System.Drawing;
 using System.Collections.Generic;
 using System.Management;
-using Windows.UI.ViewManagement;
+using System.Windows.Forms;
 
 #pragma warning disable CA1416
 

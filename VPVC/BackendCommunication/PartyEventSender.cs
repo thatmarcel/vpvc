@@ -29,15 +29,6 @@ public static class PartyEventSender {
         WithMessageContent.SendSelfStateUpdate(content);
     }
     
-    public static void SendOutgoingWebRtcSignaling(string receivingParticipantId, string signalingMessageType, string sdpContent) {
-        var content = new OutgoingWebRtcSignalingMessageContent {
-            receivingParticipantId = receivingParticipantId,
-            signalingMessageType = signalingMessageType,
-            sdpContent = sdpContent
-        };
-        WithMessageContent.SendOutgoingWebRtcSignaling(content);
-    }
-    
     public static void SendChangeTeam(int newTeamIndex) {
         var content = new ChangeTeamMessageContent {
             newTeamIndex = newTeamIndex
@@ -66,14 +57,6 @@ public static class PartyEventSender {
             var message = new SessionMessage {
                 type = MessageTypes.selfStateUpdate,
                 selfStateUpdateMessageContent = content
-            };
-            MessageSender.SendMessage(message);
-        }
-    
-        public static void SendOutgoingWebRtcSignaling(OutgoingWebRtcSignalingMessageContent content) {
-            var message = new SessionMessage {
-                type = MessageTypes.outgoingWebRtcSignalingMessage,
-                outgoingWebRtcSignalingMessageContent = content
             };
             MessageSender.SendMessage(message);
         }
