@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using NAudio.Wave;
 using OpusDotNet;
 
@@ -99,9 +100,18 @@ public class NewWindowsAudioEndpoint {
         }
     }
 
-    public void SetOutputVolume(float volumeFraction) {
+    public void SetOutputVolume(float volumeFraction, int transitionTimeInMilliseconds = 150) {
         if (waveOutEvent != null) {
-            waveOutEvent.Volume = volumeFraction;
+            var volumeDifference = waveOutEvent.Volume - volumeFraction;
+            
+            App.RunInBackground(() => {
+                for (var i = 0; i < transitionTimeInMilliseconds; i++) {
+                    waveOutEvent.Volume += volumeDifference / (float) transitionTimeInMilliseconds;
+                    Thread.Sleep(1);
+                }
+
+                waveOutEvent.Volume = volumeFraction;
+            });
         }
     }
 

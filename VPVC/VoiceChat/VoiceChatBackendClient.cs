@@ -22,7 +22,11 @@ public class VoiceChatBackendClient {
 
     public VoiceChatBackendClient() {
         listener = new EventBasedNetListener();
-        client = new NetManager(listener);
+        client = new NetManager(listener) {
+            UnsyncedEvents = true,
+            UnsyncedReceiveEvent = true,
+            AutoRecycle = true
+        };
     }
 
     public void Connect() {
@@ -30,32 +34,21 @@ public class VoiceChatBackendClient {
         listener.PeerDisconnectedEvent += (peer, disconnectInfo) => OnDisconnected();
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) => {
-            try {
-                if (!isMatchedWithTarget) {
-                    isMatchedWithTarget = dataReader.AvailableBytes > 0;
-                    return;
-                }
-
-                var senderId = dataReader.GetString(4);
-
-                var receivedBytes = dataReader.GetRemainingBytes();
-
-                if (receivedBytes == null) {
-                    return;
-                }
-
-                onBufferReceived?.Invoke(senderId, receivedBytes);
-            } catch (Exception e) { Logger.Log(e.ToString()); }
-        };
-        
-        App.RunInBackground(() => {
-            while (!shouldStop) {
-                try {
-                    client.PollEvents();
-                } catch (Exception exception) { Logger.Log(exception.ToString()); }
-                Thread.Sleep(1);
+            if (!isMatchedWithTarget) {
+                isMatchedWithTarget = dataReader.AvailableBytes > 0;
+                return;
             }
-        });
+
+            var senderId = dataReader.GetString(4);
+
+            var receivedBytes = dataReader.GetRemainingBytes();
+
+            if (receivedBytes == null) {
+                return;
+            }
+
+            onBufferReceived?.Invoke(senderId, receivedBytes);
+        };
         
         client.Start();
         client.Connect(Config.voiceChatBackendServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
