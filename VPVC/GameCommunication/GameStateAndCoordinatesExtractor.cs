@@ -40,8 +40,6 @@ public static class GameStateAndCoordinatesExtractor {
         var extractedGameStateAndRelativePlayerPosition = ScreenshotProcessing.ExtractGameStateAndRelativePlayerPosition(screenBitmap);
         
         screenBitmap.Dispose();
-        
-        Logger.Log($"Extracted data: {extractedGameStateAndRelativePlayerPosition}");
 
         if (extractedGameStateAndRelativePlayerPosition == null) {
             DebuggingInformationHelper.didLastScreenshotExtractionCompletetlyFail = true;
@@ -70,7 +68,7 @@ public static class GameStateAndCoordinatesExtractor {
         if (extractedRelativePlayerPosition == null) {
             SendUpdate(extractedGameState, null);
             
-            Logger.Log($"Got game state: {extractedGameState} without positions.");
+            // Logger.Log($"Got game state: {extractedGameState} without positions.");
             
             return;
         }
@@ -84,7 +82,7 @@ public static class GameStateAndCoordinatesExtractor {
             );
         }
         
-        Logger.Log($"Got game state: {extractedGameState} with positions ({extractedRelativePlayerPosition}) and sending update.");
+        // Logger.Log($"Got game state: {extractedGameState} with positions ({extractedRelativePlayerPosition}) and sending update.");
         
         party.participantSelf.relativePositionX = extractedRelativePlayerPosition.Item1;
         party.participantSelf.relativePositionY = extractedRelativePlayerPosition.Item2;

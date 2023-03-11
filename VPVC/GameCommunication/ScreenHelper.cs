@@ -1,8 +1,6 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
-using System.Management;
 using System.Windows.Forms;
-using System.Runtime.CompilerServices;
 
 #pragma warning disable CA1416
 
@@ -11,9 +9,11 @@ namespace VPVC.GameCommunication;
 public static class ScreenHelper {
     private static string? selectedScreenDeviceId;
     
-    public static List<ScreenInfo> GetScreens() {
-        ManagementObjectSearcher displayRecordSearcher = new ManagementObjectSearcher("SELECT CurrentHorizontalResolution, CurrentVerticalResolution, DeviceID, Name, CurrentRefreshRate FROM Win32_VideoController");
+    // Note that storing the screen bounds means they might become incorrect when a new screen is plugged in
+    // (or a / the screen gets unplugged)
+    private static Rectangle? selectedScreenBounds;
 
+    public static List<ScreenInfo> GetScreens() {
         var screens = new List<ScreenInfo>();
 
         foreach (var screen in Screen.AllScreens) {
@@ -29,25 +29,27 @@ public static class ScreenHelper {
     }
     
     public static Bitmap? TakeScreenshot() {
-        Screen? selectedScreen = null;
-        
-        foreach (var screen in Screen.AllScreens) {
-            if (screen.DeviceName != selectedScreenDeviceId) {
-                continue;
+        if (selectedScreenBounds == null) {
+            foreach (var screen in Screen.AllScreens) {
+                if (screen.DeviceName != selectedScreenDeviceId) {
+                    continue;
+                }
+
+                selectedScreenBounds = screen.Bounds;
+
+                break;
             }
-
-            selectedScreen = screen;
-
-            break;
+            
+            if (selectedScreenBounds == null) {
+                return null;
+            }
         }
 
-        if (selectedScreen == null) {
-            return null;
-        }
-        
-        Bitmap screenshotBitmap = new Bitmap(selectedScreen.Bounds.Width, selectedScreen.Bounds.Height);
+        var unwrappedSelectedScreenBounds = (Rectangle) selectedScreenBounds;
+
+        Bitmap screenshotBitmap = new Bitmap(unwrappedSelectedScreenBounds.Width, unwrappedSelectedScreenBounds.Height);
         Graphics gr = Graphics.FromImage(screenshotBitmap);
-        gr.CopyFromScreen(selectedScreen.Bounds.X, selectedScreen.Bounds.Y, 0, 0, screenshotBitmap.Size);
+        gr.CopyFromScreen(unwrappedSelectedScreenBounds.X, unwrappedSelectedScreenBounds.Y, 0, 0, screenshotBitmap.Size);
         gr.Flush();
         gr.Dispose();
         return screenshotBitmap;
