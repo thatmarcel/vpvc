@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Threading;
 using LiteNetLib;
 using VPVC.MainInternals;
@@ -25,7 +24,7 @@ public class VoiceChatBackendClient {
         client = new NetManager(listener) {
             UnsyncedEvents = true,
             UnsyncedReceiveEvent = true,
-            AutoRecycle = true
+            AutoRecycle = false
         };
     }
 
