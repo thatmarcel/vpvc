@@ -32,7 +32,7 @@ public class NewWindowsAudioEndpoint {
     private OpusEncoder opusEncoder;
     private OpusDecoder opusDecoder;
 
-    private readonly int byteCountPerFrame = 400;
+    private readonly int byteCountPerFrame = 160;
 
     public NewWindowsAudioEndpoint(bool isSourceEnabled = true, bool isSinkEnabled = true) {
         this.isSourceEnabled = isSourceEnabled;

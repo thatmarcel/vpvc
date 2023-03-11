@@ -17,7 +17,10 @@
             <TextBlock Text="for proximity voice chat" FontWeight="400" Opacity="0.7" FontSize="14" Margin="0 -2 0 0" />
             
             <TextBlock TextWrapping="WrapWholeWords" FontWeight="400" Opacity="0.85" FontSize="15" Margin="0 24 0 0">
-                For this app to be able to detect your in-game location, you need to have your minimap enabled with zoom and rotation disabled, otherwise weird things will happen.
+                For this app to be able to detect your in-game location, you need to have your minimap enabled with zoom set to 1, rotation to fixed, "Fixed Orientation" to "Based On Side" and "Keep Player Centered" to "Off", otherwise weird things will happen.
+                <LineBreak />
+                <LineBreak />
+                For now, you'll also need to set your enemy highlight color to red or purple.
                 <LineBreak />
                 <LineBreak />
                 Select the screen your game is running on below:

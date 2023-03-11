@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Management;
 using System.Windows.Forms;
+using System.Runtime.CompilerServices;
 
 #pragma warning disable CA1416
 
@@ -20,7 +21,7 @@ public static class ScreenHelper {
             screens.Add(new ScreenInfo(screen.DeviceName, screenDisplayName));
         }
         
-       return screens;
+        return screens;
     }
 
     public static void SelectScreenWithDeviceId(string deviceId) {
@@ -47,6 +48,8 @@ public static class ScreenHelper {
         Bitmap screenshotBitmap = new Bitmap(selectedScreen.Bounds.Width, selectedScreen.Bounds.Height);
         Graphics gr = Graphics.FromImage(screenshotBitmap);
         gr.CopyFromScreen(selectedScreen.Bounds.X, selectedScreen.Bounds.Y, 0, 0, screenshotBitmap.Size);
+        gr.Flush();
+        gr.Dispose();
         return screenshotBitmap;
     }
 }

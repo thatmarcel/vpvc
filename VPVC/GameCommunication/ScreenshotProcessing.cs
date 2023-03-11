@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -16,6 +18,7 @@ namespace VPVC.GameCommunication;
 // see https://csharpexamples.com/fast-image-processing-c/
 
 public static class ScreenshotProcessing {
+    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     public static Tuple<int, Tuple<int, int>?>? ExtractGameStateAndRelativePlayerPosition(Bitmap inputBitmap) {
         BlockingCollection<Tuple<int, int>> mapPlayerMarkerPixelPositions = new BlockingCollection<Tuple<int, int>>();
         // BlockingCollection<Tuple<int, int>> possibleMapOutlinePixelPositions = new BlockingCollection<Tuple<int, int>>();
@@ -40,7 +43,7 @@ public static class ScreenshotProcessing {
             int possibleAgentSelectBackgroundPixelCount = 0;
             int possibleAgentSelectTimerPixelCount = 0;
             
-            Parallel.For(0, heightInPixels, yPosition => {
+            var pr = Parallel.For(0, heightInPixels, yPosition => {
                 byte* currentLine = ptrFirstPixel + (yPosition * bitmapData.Stride);
 
                 int pixelsSinceLastBrightPixel = -1;
@@ -56,9 +59,15 @@ public static class ScreenshotProcessing {
                     int previousXByteIndex = xByteIndex - bytesPerPixel;
 
                     if (
-                        (redPixelValue == 221 || redPixelValue == 222) &&
-                        (greenPixelValue == 222 || greenPixelValue == 223) &&
-                        (bluePixelValue == 142 || bluePixelValue == 143)
+                        (
+                            (redPixelValue == 221 || redPixelValue == 222) &&
+                            (greenPixelValue == 222 || greenPixelValue == 223) &&
+                            (bluePixelValue == 142 || bluePixelValue == 143)
+                        ) /* || (
+                            (redPixelValue == 221) &&
+                            (greenPixelValue == 222) &&
+                            (bluePixelValue == 222)
+                        ) */
                     ) {
                         // Probably the player's marker on the map
                         
@@ -161,25 +170,30 @@ public static class ScreenshotProcessing {
             
             double possibleAgentSelectBackgroundPixelFractionOfAllPixels = ((double) possibleAgentSelectBackgroundPixelCount) / ((double) allPixelCount);
             double possibleAgentSelectTimerPixelFractionOfAllPixels = ((double) possibleAgentSelectTimerPixelCount) / ((double) allPixelCount);
-            
+
             /* Logger.Log($"White pixel fraction of all pixels: {whitePixelFractionOfAllPixels}");
             Logger.Log($"Possible lobby background pixel fraction of all pixels: {possibleLobbyBackgroundPixelFractionOfAllPixels}");
             Logger.Log($"Possible agent select background pixel fraction of all pixels: {possibleAgentSelectBackgroundPixelFractionOfAllPixels}");
             Logger.Log($"Possible agent select timer pixel fraction of all pixels: {possibleAgentSelectTimerPixelFractionOfAllPixels}"); */
 
+            DebuggingInformationHelper.lastScreenshotPossibleLobbyBackgroundPixelFraction = possibleLobbyBackgroundPixelFractionOfAllPixels;
+            DebuggingInformationHelper.lastScreenshotPossibleAgentSelectBackgroundPixelFraction = possibleAgentSelectBackgroundPixelFractionOfAllPixels;
+            DebuggingInformationHelper.lastScreenshotPossibleAgentSelectTimerPixelFraction = possibleAgentSelectTimerPixelFractionOfAllPixels;
+
             if (!mapPlayerMarkerPixelPositions.Any()) {
-                if (whitePixelFractionOfAllPixels >= 0.01) {
-                    return null;
+                if (whitePixelFractionOfAllPixels < 0.01) {
+                    if (possibleLobbyBackgroundPixelFractionOfAllPixels >= 0.06) {
+                        croppedImageBitmap.Dispose();
+                        return new Tuple<int, Tuple<int, int>?>(GameStates.lobby, null);
+                    }
+
+                    if (possibleAgentSelectBackgroundPixelFractionOfAllPixels >= 0.06 && possibleAgentSelectTimerPixelFractionOfAllPixels >= 0.002) {
+                        croppedImageBitmap.Dispose();
+                        return new Tuple<int, Tuple<int, int>?>(GameStates.agentSelect, null);
+                    }
                 }
 
-                if (possibleLobbyBackgroundPixelFractionOfAllPixels >= 0.11) {
-                    return new Tuple<int, Tuple<int, int>?>(GameStates.lobby, null);
-                }
-                
-                if (possibleAgentSelectBackgroundPixelFractionOfAllPixels >= 0.11 && possibleAgentSelectTimerPixelFractionOfAllPixels >= 0.002) {
-                    return new Tuple<int, Tuple<int, int>?>(GameStates.agentSelect, null);
-                }
-                
+                croppedImageBitmap.Dispose();
                 return null;
             } else if (mapPlayerMarkerPixelPositions.Count < 2) {
                 mapPlayerMarkerPixelPosition = new Tuple<int, int>(
@@ -216,11 +230,16 @@ public static class ScreenshotProcessing {
             croppedImageBitmap.Save(@"C:\Users\mrcl\Pictures\vpvc-processed.png");
             
             Logger.LogVerbose("Saved image."); */
+
+            var detectedMapOutlineAndRelativePlayerPosition = DetectMapOutlineAndCalculateRelativePlayerPosition(croppedImageBitmap, mapPlayerMarkerPixelPosition);
             
-            return new Tuple<int, Tuple<int, int>?>(GameStates.inGame, DetectMapOutlineAndCalculateRelativePlayerPosition(croppedImageBitmap, mapPlayerMarkerPixelPosition));
+            croppedImageBitmap.Dispose();
+            
+            return new Tuple<int, Tuple<int, int>?>(GameStates.inGame, detectedMapOutlineAndRelativePlayerPosition);
         }
     }
-    
+
+    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     private static Tuple<int, int>? DetectMapOutlineAndCalculateRelativePlayerPosition(Bitmap inputBitmap, Tuple<int, int> mapPlayerMarkerPixelPosition) {
         int imageScaleDownFactor = 2;
         

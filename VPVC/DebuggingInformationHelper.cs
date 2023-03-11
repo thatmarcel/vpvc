@@ -1,4 +1,6 @@
-﻿using VPVC.BackendCommunication.Shared;
+﻿using System.Runtime.CompilerServices;
+using System.Timers;
+using VPVC.BackendCommunication.Shared;
 using VPVC.MainInternals;
 
 namespace VPVC;
@@ -15,9 +17,15 @@ public static class DebuggingInformationHelper {
     public static bool hasEverEncounteredExceptionWhenRunningInForeground = false;
     public static bool hasEnqueuingInForegroundEverFailed = false;
 
+    public static double lastScreenshotPossibleLobbyBackgroundPixelFraction = -1;
+    public static double lastScreenshotPossibleAgentSelectBackgroundPixelFraction = -1;
+    public static double lastScreenshotPossibleAgentSelectTimerPixelFraction = -1;
+
     public static string lastReceivedMessageString = "";
 
     public static string infoText { get; private set; } = "";
+
+    private static Timer? updateTimer;
 
     private static void SetInfoText(string newInfoText) {
         infoText = newInfoText;
@@ -26,12 +34,13 @@ public static class DebuggingInformationHelper {
     }
 
     public static void StartUpdating() {
-        var timer = new System.Timers.Timer();
-        timer.Elapsed += (_, _) => UpdateInfoText();
-        timer.Interval = 500;
-        timer.Start();
+        updateTimer = new Timer();
+        updateTimer.Elapsed += (_, _) => UpdateInfoText();
+        updateTimer.Interval = 500;
+        updateTimer.Start();
     }
 
+    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     private static void UpdateInfoText() {
         var party = PartyManager.currentParty;
         
@@ -46,6 +55,8 @@ public static class DebuggingInformationHelper {
                         : "In-game"
                 )
         )}";
+
+        newInfoText += $"; Last screenshot possible fractions: lobby background ({lastScreenshotPossibleLobbyBackgroundPixelFraction:0.####}), agent select background ({lastScreenshotPossibleAgentSelectBackgroundPixelFraction:0.####}), agent select timer ({lastScreenshotPossibleAgentSelectTimerPixelFraction:0.####})";
 
         newInfoText += $"; Last received message: {lastReceivedMessageString}";
         

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -29,6 +30,7 @@ public partial class App: Application {
         RunInBackground(() => {
             for (;;) {
                 MessageReceiver.ProcessNextMessage();
+                Thread.Sleep(1);
             }
 
             // ReSharper disable once FunctionNeverReturns

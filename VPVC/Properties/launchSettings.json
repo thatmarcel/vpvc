@@ -4,7 +4,13 @@
       "commandName": "MsixPackage"
     },
     "VPVC (Unpackaged)": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "VPVC (Unpackaged, 2)": {
+      "commandName": "Project",
+      "nativeDebugging": true,
+      "hotReloadEnabled": false
     }
   }
 }

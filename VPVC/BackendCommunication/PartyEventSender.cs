@@ -1,4 +1,5 @@
-﻿using VPVC.BackendCommunication.Shared;
+﻿using System.Runtime.CompilerServices;
+using VPVC.BackendCommunication.Shared;
 using VPVC.BackendCommunication.Shared.ProtobufMessages;
 using VPVC.BackendCommunication.Shared.ProtobufMessages.ClientToServer;
 

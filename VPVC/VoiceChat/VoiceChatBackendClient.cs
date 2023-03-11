@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading;
 using LiteNetLib;
 using VPVC.MainInternals;
@@ -29,25 +30,29 @@ public class VoiceChatBackendClient {
         listener.PeerDisconnectedEvent += (peer, disconnectInfo) => OnDisconnected();
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) => {
-            if (!isMatchedWithTarget) {
-                isMatchedWithTarget = dataReader.AvailableBytes > 0;
-                return;
-            }
-            
-            var senderId = dataReader.GetString(4);
-            
-            var receivedBytes = dataReader.GetRemainingBytes();
+            try {
+                if (!isMatchedWithTarget) {
+                    isMatchedWithTarget = dataReader.AvailableBytes > 0;
+                    return;
+                }
 
-            if (receivedBytes == null) {
-                return;
-            }
-            
-            onBufferReceived?.Invoke(senderId, receivedBytes);
+                var senderId = dataReader.GetString(4);
+
+                var receivedBytes = dataReader.GetRemainingBytes();
+
+                if (receivedBytes == null) {
+                    return;
+                }
+
+                onBufferReceived?.Invoke(senderId, receivedBytes);
+            } catch (Exception e) { Logger.Log(e.ToString()); }
         };
         
         App.RunInBackground(() => {
             while (!shouldStop) {
-                client.PollEvents();
+                try {
+                    client.PollEvents();
+                } catch (Exception exception) { Logger.Log(exception.ToString()); }
                 Thread.Sleep(1);
             }
         });
@@ -68,7 +73,10 @@ public class VoiceChatBackendClient {
         if (shouldStop) {
             onDisconnected?.Invoke();
         } else {
-            Connect();
+            client.Stop();
+            Thread.Sleep(1);
+            client.Start();
+            client.Connect(Config.voiceChatBackendServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
         }
     }
 

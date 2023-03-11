@@ -145,10 +145,10 @@ public static class VoiceChatManager {
     private static void SetParticipantAudioVolume(float volumeFraction, NewWindowsAudioEndpoint participantAudioEndpoint) {
         participantAudioEndpoint.SetOutputVolume(volumeFraction);
 
-        if (volumeFraction == 0f) {
+        /* if (volumeFraction == 0f) {
             participantAudioEndpoint.PauseAudio();
         } else {
             participantAudioEndpoint.ResumeAudio();
-        }
+        } */
     }
 }

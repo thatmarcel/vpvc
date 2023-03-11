@@ -10,7 +10,7 @@ public static class Config {
     public static readonly int minUserDisplayNameLength = 3;
     public static readonly int maxUserDisplayNameLength = 16;
 
-    public static readonly int gameCoordinateExtractionIntervalInMilliseconds = 500;
+    public static readonly int gameCoordinateExtractionIntervalInMilliseconds = 150;
 
     public static readonly string backendServerHostname = "backend.vpvc.app";
     public static readonly int backendServerPort = 443;

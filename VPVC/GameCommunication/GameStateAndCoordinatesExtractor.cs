@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using VPVC.BackendCommunication;
 using VPVC.BackendCommunication.Shared;
 using VPVC.MainInternals;
@@ -6,19 +7,22 @@ using VPVC.MainInternals;
 namespace VPVC.GameCommunication;
 
 public static class GameStateAndCoordinatesExtractor {
+    private static System.Timers.Timer? extractionTimer;
+    
     public static void StartRepeatedExtraction() {
-        var timer = new System.Timers.Timer();
-        timer.Elapsed += (_, _) => {
+        extractionTimer = new System.Timers.Timer();
+        extractionTimer.Elapsed += (_, _) => {
             try {
                 Execute();
             } catch (Exception exception) {
                 Logger.Log(exception.ToString());
             }
         };
-        timer.Interval = Config.gameCoordinateExtractionIntervalInMilliseconds;
-        timer.Start();
+        extractionTimer.Interval = Config.gameCoordinateExtractionIntervalInMilliseconds;
+        extractionTimer.Start();
     }
-    
+
+    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     private static void Execute() {
         if (PartyManager.currentParty == null) {
             return;
@@ -34,6 +38,10 @@ public static class GameStateAndCoordinatesExtractor {
         DebuggingInformationHelper.didLastScreenshotTakingCompletetlyFail = false;
 
         var extractedGameStateAndRelativePlayerPosition = ScreenshotProcessing.ExtractGameStateAndRelativePlayerPosition(screenBitmap);
+        
+        screenBitmap.Dispose();
+        
+        Logger.Log($"Extracted data: {extractedGameStateAndRelativePlayerPosition}");
 
         if (extractedGameStateAndRelativePlayerPosition == null) {
             DebuggingInformationHelper.didLastScreenshotExtractionCompletetlyFail = true;
@@ -84,6 +92,7 @@ public static class GameStateAndCoordinatesExtractor {
         SendUpdate(extractedGameState, extractedRelativePlayerPosition);
     }
 
+    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     private static void SendUpdate(int gameState, Tuple<int, int>? relativePlayerPosition) {
         if (relativePlayerPosition != null) {
             PartyEventSender.SendSelfStateUpdate(gameState, relativePlayerPosition.Item1, relativePlayerPosition.Item2);
