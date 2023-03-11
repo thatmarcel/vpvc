@@ -39,8 +39,7 @@ public static class DebuggingInformationHelper {
         updateTimer.Interval = 500;
         updateTimer.Start();
     }
-
-    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+    
     private static void UpdateInfoText() {
         var party = PartyManager.currentParty;
         

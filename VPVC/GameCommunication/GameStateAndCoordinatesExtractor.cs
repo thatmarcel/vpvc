@@ -21,8 +21,7 @@ public static class GameStateAndCoordinatesExtractor {
         extractionTimer.Interval = Config.gameCoordinateExtractionIntervalInMilliseconds;
         extractionTimer.Start();
     }
-
-    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+    
     private static void Execute() {
         if (PartyManager.currentParty == null) {
             return;
@@ -89,8 +88,7 @@ public static class GameStateAndCoordinatesExtractor {
         
         SendUpdate(extractedGameState, extractedRelativePlayerPosition);
     }
-
-    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+    
     private static void SendUpdate(int gameState, Tuple<int, int>? relativePlayerPosition) {
         if (relativePlayerPosition != null) {
             PartyEventSender.SendSelfStateUpdate(gameState, relativePlayerPosition.Item1, relativePlayerPosition.Item2);

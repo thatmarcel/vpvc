@@ -18,7 +18,6 @@ namespace VPVC.GameCommunication;
 // see https://csharpexamples.com/fast-image-processing-c/
 
 public static class ScreenshotProcessing {
-    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     public static Tuple<int, Tuple<int, int>?>? ExtractGameStateAndRelativePlayerPosition(Bitmap inputBitmap) {
         BlockingCollection<Tuple<int, int>> mapPlayerMarkerPixelPositions = new BlockingCollection<Tuple<int, int>>();
         // BlockingCollection<Tuple<int, int>> possibleMapOutlinePixelPositions = new BlockingCollection<Tuple<int, int>>();
@@ -238,8 +237,7 @@ public static class ScreenshotProcessing {
             return new Tuple<int, Tuple<int, int>?>(GameStates.inGame, detectedMapOutlineAndRelativePlayerPosition);
         }
     }
-
-    [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+    
     private static Tuple<int, int>? DetectMapOutlineAndCalculateRelativePlayerPosition(Bitmap inputBitmap, Tuple<int, int> mapPlayerMarkerPixelPosition) {
         int imageScaleDownFactor = 2;
         
