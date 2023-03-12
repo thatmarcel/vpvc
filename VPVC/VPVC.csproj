@@ -17,7 +17,7 @@
 	<ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
 	<PlatformTarget>x64</PlatformTarget>
 	<VersionPrefix>1.0.0</VersionPrefix>
-	<VersionSuffix>RC26</VersionSuffix>
+	<VersionSuffix>RC27</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>

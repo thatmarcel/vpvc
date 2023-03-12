@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
-using Windows.ApplicationModel;
 using Windows.Graphics;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -12,6 +10,11 @@ using WinRT.Interop;
 namespace VPVC;
 
 public static class WindowExtensions {
+    /* [DllImport("dwmapi.dll")]
+    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+    private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20; */
+    
     private const int WM_GETICON = 0x007F;  
     private const int WM_SETICON = 0x0080;
     

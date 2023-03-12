@@ -24,7 +24,7 @@ public class VoiceChatBackendClient {
         client = new NetManager(listener) {
             UnsyncedEvents = true,
             UnsyncedReceiveEvent = true,
-            AutoRecycle = false
+            AutoRecycle = true
         };
     }
 

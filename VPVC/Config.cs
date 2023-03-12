@@ -18,6 +18,6 @@ public static class Config {
     public static readonly string voiceChatBackendServerHostname = "backend.vpvc.app";
     public static readonly int voiceChatBackendServerPort = 4719;
     
-    public static readonly int fullVolumeHearingRadius = 6;
+    public static readonly int fullVolumeHearingRadius = 2;
     public static readonly int maxHearingRadius = 16;
 }

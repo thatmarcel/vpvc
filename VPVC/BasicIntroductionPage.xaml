@@ -23,6 +23,9 @@
                 For now, you'll also need to set your enemy highlight color to red or purple.
                 <LineBreak />
                 <LineBreak />
+                Also, there might be some incompatibilities with Voicemeeter so if you are experiencing audio glitches or delay, try turning off Voicemeeter.
+                <LineBreak />
+                <LineBreak />
                 Select the screen your game is running on below:
             </TextBlock>
             
