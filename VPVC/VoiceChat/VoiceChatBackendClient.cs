@@ -36,7 +36,7 @@ public class VoiceChatBackendClient {
         listener.PeerConnectedEvent += peer => OnConnected();
         listener.PeerDisconnectedEvent += (peer, disconnectInfo) => OnDisconnected();
 
-        listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) => {
+        listener.NetworkReceiveEvent += (fromPeer, dataReader, channel, deliveryMethod) => {
             if (!isMatchedWithTarget) {
                 isMatchedWithTarget = dataReader.AvailableBytes > 0;
                 return;

@@ -38,7 +38,7 @@ public class NewWindowsAudioEndpoint {
 
     private readonly int byteCountPerFrame = 160;
 
-    private readonly int minimumMicrophoneBufferAverage = 30;
+    private readonly int minimumMicrophoneBufferAverage = 34;
 
     public NewWindowsAudioEndpoint(bool isSourceEnabled = true, bool isSinkEnabled = true) {
         this.isSourceEnabled = isSourceEnabled;

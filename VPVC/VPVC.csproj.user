@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>VPVC (Unpackaged, 2)</ActiveDebugProfile>
-    <_LastSelectedProfileId>C:\Users\mrcl\Documents\Projects\VPVC\VPVC\Properties\PublishProfiles\win10-x64.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Users\mrcl\Documents\Projects\VPVC\VPVC\Properties\PublishProfiles\win10-x86.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

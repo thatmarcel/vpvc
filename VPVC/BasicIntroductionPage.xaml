@@ -35,5 +35,7 @@
                 <Button Margin="0 24 0 0" Content="Continue" Click="HandleContinueButtonClick" x:Name="continueButton" />
             </StackPanel>
         </Border>
+        
+        <TextBlock FontWeight="400" Opacity="0.7" FontSize="13" Margin="0 8 12 0" HorizontalAlignment="Right" Name="versionTextBlock" />
     </StackPanel>
 </Page>
