@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using OpusDotNet;
 
 namespace VPVC.VoiceChat;
@@ -19,6 +21,7 @@ public class NewWindowsAudioEndpoint {
     private WaveFormat? waveFormat;
 
     private BufferedWaveProvider? waveProvider;
+    private VolumeSampleProvider? volumeSampleProvider;
 
     private int audioInputDeviceIndex = -1;
     private int audioOutputDeviceIndex = -1;
@@ -35,6 +38,8 @@ public class NewWindowsAudioEndpoint {
 
     private readonly int byteCountPerFrame = 160;
 
+    private readonly int minimumMicrophoneBufferAverage = 30;
+
     public NewWindowsAudioEndpoint(bool isSourceEnabled = true, bool isSinkEnabled = true) {
         this.isSourceEnabled = isSourceEnabled;
         this.isSinkEnabled = isSinkEnabled;
@@ -47,17 +52,11 @@ public class NewWindowsAudioEndpoint {
         
         opusDecoder = new OpusDecoder(audioSampleRate, audioChannelCount);
 
-        // audioFormatManager.SetSelectedFormat(audioEncoder.SupportedFormats.MaxBy(x => x.ClockRate));
-
-        // audioSampleRate = audioFormatManager.SelectedFormat.ClockRate;
-
         if (isSinkEnabled) {
             InitializePlaybackDevice();
         }
 
         if (isSourceEnabled) {
-            // waveSourceFormat = new Mp3WaveFormat(audioSampleRate, audioEncodingBitCount, audioChannelCount);
-            
             waveInEvent = new WaveInEvent();
             waveInEvent.WaveFormat = waveFormat;
             waveInEvent.BufferMilliseconds = 20;
@@ -101,16 +100,16 @@ public class NewWindowsAudioEndpoint {
     }
 
     public void SetOutputVolume(float volumeFraction, int transitionTimeInMilliseconds = 150) {
-        if (waveOutEvent != null) {
-            var volumeDifference = waveOutEvent.Volume - volumeFraction;
+        if (volumeSampleProvider != null) {
+            var volumeDifference = volumeSampleProvider.Volume - volumeFraction;
             
             App.RunInBackground(() => {
                 for (var i = 0; i < transitionTimeInMilliseconds; i++) {
-                    waveOutEvent.Volume += volumeDifference / (float) transitionTimeInMilliseconds;
+                    volumeSampleProvider.Volume = Math.Clamp(volumeSampleProvider.Volume + (volumeDifference / transitionTimeInMilliseconds), 0f, 2f);
                     Thread.Sleep(1);
                 }
 
-                waveOutEvent.Volume = volumeFraction;
+                volumeSampleProvider.Volume = volumeFraction;
             });
         }
     }
@@ -133,12 +132,20 @@ public class NewWindowsAudioEndpoint {
         waveOutEvent = new WaveOutEvent();
         waveOutEvent.DesiredLatency = 60;
         waveOutEvent.DeviceNumber = audioOutputDeviceIndex;
-        waveProvider = new BufferedWaveProvider(waveFormat);
-        waveProvider.DiscardOnBufferOverflow = true;
-        waveOutEvent?.Init(waveProvider);
+        waveProvider = new BufferedWaveProvider(waveFormat) {
+            DiscardOnBufferOverflow = true
+        };
+        volumeSampleProvider = new VolumeSampleProvider(waveProvider.ToSampleProvider());
+        waveOutEvent?.Init(volumeSampleProvider);
     }
 
     private void HandleLocalAudioSampleAvailable(object? sender, WaveInEventArgs args) {
+        int average = args.Buffer.Take(args.BytesRecorded).Where((_, i) => i % 2 == 0).Select((_, i) => BitConverter.ToInt16(args.Buffer, i * 2)).Sum(s => Math.Abs(s)) / args.BytesRecorded;
+
+        if (average < minimumMicrophoneBufferAverage) {
+            return;
+        }
+
         var encodedBytes = new byte[byteCountPerFrame];
         var encodedLength = opusEncoder.Encode(args.Buffer, args.BytesRecorded, encodedBytes, encodedBytes.Length);
         

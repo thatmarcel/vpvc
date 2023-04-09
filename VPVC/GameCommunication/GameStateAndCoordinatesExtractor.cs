@@ -8,6 +8,10 @@ namespace VPVC.GameCommunication;
 
 public static class GameStateAndCoordinatesExtractor {
     private static System.Timers.Timer? extractionTimer;
+
+    public static int overridenGameState = -1;
+    public static int overridenRelativeCoordinatesX = -1;
+    public static int overridenRelativeCoordinatesY = -1;
     
     public static void StartRepeatedExtraction() {
         extractionTimer = new System.Timers.Timer();
@@ -24,6 +28,24 @@ public static class GameStateAndCoordinatesExtractor {
     
     private static void Execute() {
         if (PartyManager.currentParty == null) {
+            return;
+        }
+
+        if (
+            overridenGameState is >= 0 and <= 2 &&
+            overridenRelativeCoordinatesX is >= 0 and <= 100 &&
+            overridenRelativeCoordinatesY is >= 0 and <= 100
+        ) {
+            PartyManager.currentParty.participantSelf.gameState = overridenGameState;
+            PartyManager.currentParty.participantSelf.relativePositionX = overridenRelativeCoordinatesX;
+            PartyManager.currentParty.participantSelf.relativePositionY = overridenRelativeCoordinatesY;
+            
+            if (overridenGameState == GameStates.inGame) {
+                SendUpdate(overridenGameState, new Tuple<int, int>(overridenRelativeCoordinatesX, overridenRelativeCoordinatesY));
+            } else {
+                SendUpdate(overridenGameState, null);
+            }
+            
             return;
         }
         

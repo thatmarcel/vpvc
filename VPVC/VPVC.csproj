@@ -17,7 +17,8 @@
 	<ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
 	<PlatformTarget>x64</PlatformTarget>
 	<VersionPrefix>1.0.0</VersionPrefix>
-	<VersionSuffix>RC27</VersionSuffix>
+	<VersionSuffix>RC28</VersionSuffix>
+	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,31 +7,33 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     
-    <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8">
-        <Border.Background>
-            <SolidColorBrush Color="LightGray" Opacity="0.1" />
-        </Border.Background>
+    <StackPanel Orientation="Vertical">
+        <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8">
+            <Border.Background>
+                <SolidColorBrush Color="LightGray" Opacity="0.1" />
+            </Border.Background>
             
-        <StackPanel Orientation="Vertical" Margin="24 16 24 24">
-            <TextBlock Text="Configure your game" FontWeight="600" FontSize="24" />
-            <TextBlock Text="for proximity voice chat" FontWeight="400" Opacity="0.7" FontSize="14" Margin="0 -2 0 0" />
+            <StackPanel Orientation="Vertical" Margin="24 16 24 24">
+                <TextBlock Text="Configure your game" FontWeight="600" FontSize="24" />
+                <TextBlock Text="for proximity voice chat" FontWeight="400" Opacity="0.7" FontSize="14" Margin="0 -2 0 0" />
             
-            <TextBlock TextWrapping="WrapWholeWords" FontWeight="400" Opacity="0.85" FontSize="15" Margin="0 24 0 0">
-                For this app to be able to detect your in-game location, you need to have your minimap enabled with zoom set to 0.9, rotation to fixed, "Fixed Orientation" to "Based On Side" and "Keep Player Centered" to "Off", otherwise weird things will happen.
-                <LineBreak />
-                <LineBreak />
-                For now, you'll also need to set your enemy highlight color to red or purple.
-                <LineBreak />
-                <LineBreak />
-                Also, there might be some incompatibilities with Voicemeeter so if you are experiencing audio glitches or delay, try turning off Voicemeeter.
-                <LineBreak />
-                <LineBreak />
-                Select the screen your game is running on below:
-            </TextBlock>
+                <TextBlock TextWrapping="WrapWholeWords" FontWeight="400" Opacity="0.85" FontSize="15" Margin="0 24 0 0">
+                    For this app to be able to detect your in-game location, you need to have your minimap enabled with zoom set to 0.9, rotation to fixed, "Fixed Orientation" to "Based On Side" and "Keep Player Centered" to "Off", otherwise weird things will happen.
+                    <LineBreak />
+                    <LineBreak />
+                    For now, you'll also need to set your enemy highlight color to red or purple.
+                    <LineBreak />
+                    <LineBreak />
+                    Also, there might be some incompatibilities with Voicemeeter so if you are experiencing audio glitches or delay, try turning off Voicemeeter.
+                    <LineBreak />
+                    <LineBreak />
+                    Select the screen your game is running on below:
+                </TextBlock>
             
-            <ComboBox Margin="0 12 0 0" ItemsSource="{x:Bind availableScreens}" DisplayMemberPath="Name" SelectedValuePath="DeviceId" x:Name="screenSelectionComboBox" />
+                <ComboBox Margin="0 12 0 0" ItemsSource="{x:Bind availableScreens}" DisplayMemberPath="Name" SelectedValuePath="DeviceId" x:Name="screenSelectionComboBox" />
             
-            <Button Margin="0 24 0 0" Content="Continue" Click="HandleContinueButtonClick" x:Name="continueButton" />
-        </StackPanel>
-    </Border>
+                <Button Margin="0 24 0 0" Content="Continue" Click="HandleContinueButtonClick" x:Name="continueButton" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
 </Page>

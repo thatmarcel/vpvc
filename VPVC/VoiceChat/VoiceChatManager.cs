@@ -9,12 +9,18 @@ namespace VPVC.VoiceChat;
 public static class VoiceChatManager {
     private static readonly Dictionary<string, NewWindowsAudioEndpoint> audioEndpoints = new();
 
-    private static VoiceChatBackendClient? voiceChatBackendClient;
+    public static VoiceChatBackendClient? voiceChatBackendClient;
 
     private static NewWindowsAudioEndpoint? microphoneAudioEndpoint;
 
+    private static Dictionary<string, double> maxVolumesForParticipantIds = new();
+
     public static void Start() {
         App.RunInBackground(StartSync);
+    }
+
+    public static void SetMaxVolumeForParticipantWithId(string participantId, double maxVolume) {
+        maxVolumesForParticipantIds[participantId] = maxVolume;
     }
 
     private static void StartSync() {
@@ -107,12 +113,13 @@ public static class VoiceChatManager {
     
     private static void HandlePartyParticipantStateUpdate(Party party, PartyParticipant partyParticipant, NewWindowsAudioEndpoint participantAudioEndpoint) {
         if (partyParticipant.gameState == GameStates.lobby) {
-            SetParticipantAudioVolume(1f, participantAudioEndpoint);
+            SetParticipantAudioVolume(1d, partyParticipant.id, participantAudioEndpoint);
         } else if (partyParticipant.gameState == GameStates.agentSelect) {
             SetParticipantAudioVolume(
                 party.participantSelf.teamIndex == partyParticipant.teamIndex
-                    ? 1f
-                    : 0f,
+                    ? 1d
+                    : 0d,
+                partyParticipant.id,
                 participantAudioEndpoint
             );
         } else if (partyParticipant.gameState == GameStates.inGame) {
@@ -124,12 +131,12 @@ public static class VoiceChatManager {
             }
 
             if (distance < Config.fullVolumeHearingRadius) {
-                SetParticipantAudioVolume(1f, participantAudioEndpoint);
+                SetParticipantAudioVolume(1d, partyParticipant.id, participantAudioEndpoint);
                 return;
             }
 
             if (distance > Config.maxHearingRadius) {
-                SetParticipantAudioVolume(0f, participantAudioEndpoint);
+                SetParticipantAudioVolume(0d, partyParticipant.id, participantAudioEndpoint);
                 return;
             }
 
@@ -138,17 +145,17 @@ public static class VoiceChatManager {
 
             var volume = (radiusOutsideOfFullVolumeRadius - distanceOutsideOfFullVolumeRadius) / radiusOutsideOfFullVolumeRadius;
             
-            SetParticipantAudioVolume((float) volume, participantAudioEndpoint);
+            SetParticipantAudioVolume(volume, partyParticipant.id, participantAudioEndpoint);
         }
     }
     
-    private static void SetParticipantAudioVolume(float volumeFraction, NewWindowsAudioEndpoint participantAudioEndpoint) {
-        participantAudioEndpoint.SetOutputVolume(volumeFraction);
-
-        /* if (volumeFraction == 0f) {
-            participantAudioEndpoint.PauseAudio();
+    private static void SetParticipantAudioVolume(double volumeFraction, string participantId, NewWindowsAudioEndpoint participantAudioEndpoint) {
+        if (maxVolumesForParticipantIds.TryGetValue(participantId, out double maxParticipantVolume)) {
+            Logger.Log($"Volume fraction: {volumeFraction}, max participant volume: {maxParticipantVolume}");
+            participantAudioEndpoint.SetOutputVolume((float) (volumeFraction * maxParticipantVolume));
         } else {
-            participantAudioEndpoint.ResumeAudio();
-        } */
+            Logger.Log($"Volume fraction: {volumeFraction}");
+            participantAudioEndpoint.SetOutputVolume((float) volumeFraction);
+        }
     }
 }

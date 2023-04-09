@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using LiteNetLib;
 using VPVC.MainInternals;
@@ -18,6 +20,8 @@ public class VoiceChatBackendClient {
     public VoiceChatBackendClientEmptyCallback? onConnected;
     public VoiceChatBackendClientEmptyCallback? onDisconnected;
     public VoiceChatBackendClientBufferCallback? onBufferReceived;
+
+    public Dictionary<string, long> lastAudioTimestampsForParticipantIds = new();
 
     public VoiceChatBackendClient() {
         listener = new EventBasedNetListener();
@@ -42,9 +46,11 @@ public class VoiceChatBackendClient {
 
             var receivedBytes = dataReader.GetRemainingBytes();
 
-            if (receivedBytes == null) {
+            if (senderId == null || receivedBytes == null) {
                 return;
             }
+
+            lastAudioTimestampsForParticipantIds[senderId] = DateTime.Now.ToFileTime();
 
             onBufferReceived?.Invoke(senderId, receivedBytes);
         };

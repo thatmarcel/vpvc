@@ -1,0 +1,29 @@
+<Page
+    x:Class="VPVC.DebuggingToolsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VPVC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    
+    <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8">
+        <Border.Background>
+            <SolidColorBrush Color="LightGray" Opacity="0.1" />
+        </Border.Background>
+            
+        <StackPanel Orientation="Vertical" Margin="24">
+            <Button Content="Back to party overview" Click="HandleBackToPartyOverviewButtonClick" />
+            
+            <TextBlock TextWrapping="Wrap" FontWeight="400" Opacity="0.85" FontSize="9" Margin="0 16 0 0" x:Name="debuggingInformationTextBlock" />
+            
+            <CheckBox Margin="0 16 0 8" Content="Override coordinates and game state (disables screenshot processing)" x:Name="coordinateAndGameStateOverrideCheckBox" />
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="24" Margin="0 0 0 0" x:Name="coordinatesXOverrideTextBox" />
+                <TextBox Text="63" Margin="8 0 0 0" x:Name="coordinatesYOverrideTextBox" />
+                <ComboBox Margin="8 0 0 0" ItemsSource="{x:Bind overrideGameStateOptions}" DisplayMemberPath="Item1" SelectedValuePath="Item2" x:Name="coordinatesOverrideGameStateSelectionComboBox" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Page>

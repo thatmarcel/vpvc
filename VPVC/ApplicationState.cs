@@ -18,6 +18,10 @@ public static class ApplicationState {
         SetCurrentFlowStep(FlowStep.BasicUserInformationConfiguration);
     }
     
+    public static void HandleDebuggingToolsPageRequested() {
+        SetCurrentFlowStep(FlowStep.DebuggingToolsPage);
+    }
+    
     public static string? userDisplayName { get; private set; }
     public static void SetUserDisplayName(string newUserDisplayName) {
         userDisplayName = newUserDisplayName;
@@ -36,6 +40,8 @@ public static class ApplicationState {
         BasicIntroduction,
         BasicUserInformationConfiguration,
         PartyJoinOrCreate,
-        PartyOverview
+        PartyOverview,
+        
+        DebuggingToolsPage
     }
 }

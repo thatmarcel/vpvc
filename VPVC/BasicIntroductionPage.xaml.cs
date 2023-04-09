@@ -8,6 +8,7 @@ namespace VPVC;
 public sealed partial class BasicIntroductionPage: Page {
     // Variable is referenced in XAML
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private List<ScreenInfo> availableScreens = new();
         
     public BasicIntroductionPage() {
@@ -20,6 +21,8 @@ public sealed partial class BasicIntroductionPage: Page {
 
             screenSelectionComboBox.IsEnabled = false;
             continueButton.IsEnabled = false;
+            
+            return;
         }
         
         screenSelectionComboBox.SelectedIndex = 0;

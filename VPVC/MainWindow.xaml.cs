@@ -24,30 +24,48 @@ public sealed partial class MainWindow: MicaWindow {
                     basicUserInformationConfigurationPage.Visibility = Visibility.Collapsed;
                     partyJoinOrCreatePage.Visibility = Visibility.Collapsed;
                     partyOverviewPage.Visibility = Visibility.Collapsed;
+
+                    debuggingToolsPage.Visibility = Visibility.Collapsed;
                     break;
                 case ApplicationState.FlowStep.BasicUserInformationConfiguration:
                     basicIntroductionPage.Visibility = Visibility.Collapsed;
                     basicUserInformationConfigurationPage.Visibility = Visibility.Visible;
                     partyJoinOrCreatePage.Visibility = Visibility.Collapsed;
                     partyOverviewPage.Visibility = Visibility.Collapsed;
+
+                    debuggingToolsPage.Visibility = Visibility.Collapsed;
                     break;
                 case ApplicationState.FlowStep.PartyJoinOrCreate:
                     basicIntroductionPage.Visibility = Visibility.Collapsed;
                     basicUserInformationConfigurationPage.Visibility = Visibility.Collapsed;
                     partyJoinOrCreatePage.Visibility = Visibility.Visible;
                     partyOverviewPage.Visibility = Visibility.Collapsed;
+
+                    debuggingToolsPage.Visibility = Visibility.Collapsed;
                     break;
                 case ApplicationState.FlowStep.PartyOverview:
                     basicIntroductionPage.Visibility = Visibility.Collapsed;
                     basicUserInformationConfigurationPage.Visibility = Visibility.Collapsed;
                     partyJoinOrCreatePage.Visibility = Visibility.Collapsed;
                     partyOverviewPage.Visibility = Visibility.Visible;
+
+                    debuggingToolsPage.Visibility = Visibility.Collapsed;
+                    break;
+                case ApplicationState.FlowStep.DebuggingToolsPage:
+                    basicIntroductionPage.Visibility = Visibility.Collapsed;
+                    basicUserInformationConfigurationPage.Visibility = Visibility.Collapsed;
+                    partyJoinOrCreatePage.Visibility = Visibility.Collapsed;
+                    partyOverviewPage.Visibility = Visibility.Collapsed;
+
+                    debuggingToolsPage.Visibility = Visibility.Visible;
                     break;
                 default:
                     basicIntroductionPage.Visibility = Visibility.Collapsed;
                     basicUserInformationConfigurationPage.Visibility = Visibility.Collapsed;
                     partyJoinOrCreatePage.Visibility = Visibility.Collapsed;
                     partyOverviewPage.Visibility = Visibility.Collapsed;
+
+                    debuggingToolsPage.Visibility = Visibility.Collapsed;
                     break;
             }
         };

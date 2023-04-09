@@ -14,5 +14,7 @@
         <local:BasicUserInformationConfigurationPage Margin="32 24 32 32" x:Name="basicUserInformationConfigurationPage" Visibility="Collapsed" />
         <local:PartyJoinOrCreatePage Margin="32 24 32 32" x:Name="partyJoinOrCreatePage" Visibility="Collapsed" />
         <local:PartyOverviewPage Margin="32 24 32 32" x:Name="partyOverviewPage" Visibility="Collapsed" />
+        
+        <local:DebuggingToolsPage Margin="32 24 32 32" x:Name="debuggingToolsPage" Visibility="Collapsed" />
     </StackPanel>
 </local:MicaWindow>
