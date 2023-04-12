@@ -31,6 +31,9 @@ public sealed partial class PartyOverviewPage: Page {
         ApplicationState.partyOverviewInformationChanged += HandlePartyOverviewInformationChanged;
 
         SetupPartyParticipantsTalkingStatesUpdateTimer();
+
+        selfMuteCheckBox.Checked += (_, _) => { NewWindowsAudioEndpoint.isMicrophoneMuted = true; };
+        selfMuteCheckBox.Unchecked += (_, _) => { NewWindowsAudioEndpoint.isMicrophoneMuted = false; };
     }
 
     private void SetupPartyParticipantsTalkingStatesUpdateTimer() {

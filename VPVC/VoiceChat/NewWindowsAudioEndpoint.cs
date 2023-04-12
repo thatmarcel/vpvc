@@ -10,6 +10,8 @@ namespace VPVC.VoiceChat;
 public delegate void NewWindowsAudioEndpointHasNewSamples(byte[] samples);
 
 public class NewWindowsAudioEndpoint {
+    public static bool isMicrophoneMuted = false;
+    
     public event NewWindowsAudioEndpointHasNewSamples? hasNewSamples;
     
     private int audioSampleRate = 48000;
@@ -140,6 +142,10 @@ public class NewWindowsAudioEndpoint {
     }
 
     private void HandleLocalAudioSampleAvailable(object? sender, WaveInEventArgs args) {
+        if (isMicrophoneMuted) {
+            return;
+        }
+        
         int average = args.Buffer.Take(args.BytesRecorded).Where((_, i) => i % 2 == 0).Select((_, i) => BitConverter.ToInt16(args.Buffer, i * 2)).Sum(s => Math.Abs(s)) / args.BytesRecorded;
 
         if (average < minimumMicrophoneBufferAverage) {

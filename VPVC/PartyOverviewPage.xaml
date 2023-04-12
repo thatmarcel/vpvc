@@ -90,8 +90,11 @@
                         </Border>
                     </StackPanel>
                 </Grid>
-            
-                <Button Content="Leave party" Margin="0 24 0 0" Click="HandleLeavePartyButtonClick" />
+                
+                <StackPanel Orientation="Horizontal" Margin="0 24 0 0">
+                    <Button Content="Leave party" Click="HandleLeavePartyButtonClick" />
+                    <CheckBox Margin="16 0 0 0" Content="Mute microphone" x:Name="selfMuteCheckBox" />
+                </StackPanel>
             </StackPanel>
         </Border>
     
