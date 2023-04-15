@@ -19,7 +19,6 @@
 	<VersionPrefix>1.0.0</VersionPrefix>
 	<VersionSuffix>RC30</VersionSuffix>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>

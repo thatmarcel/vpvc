@@ -1,68 +1,85 @@
 on:
     push:
         branches:
-        - main
+            - main
 env:
     DOTNET_VERSION: 7
 
 jobs:
+    build-app:
+        name: Build app on Windows
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v3
+            -
+                name: Setup .NET Core
+                uses: actions/setup-dotnet@v3
+                with:
+                    dotnet-version: ${{ env.DOTNET_VERSION }}
+            -
+                name: Setup MSBuild.exe
+                uses: microsoft/setup-msbuild@v1.0.0
+            -
+                name: Fetch dependencies
+                run: dotnet restore
+            -
+                name: Build project
+                run: cd VPVC && dotnet publish /p:PublishProfile=Properties/PublishProfiles/win10-x64.pubxml -o ../build-output
+            -
+                uses: actions/upload-artifact@v3
+                with:
+                    name: app-build-output
+                    path: build-output
     publish-executable:
         name: Publish executable
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v3
-        -
-            name: Setup .NET Core
-            uses: actions/setup-dotnet@v3
-            with:
-                dotnet-version: ${{ env.DOTNET_VERSION }}
-        -
-            name: Fetch dependencies
-            run: dotnet restore
-        -
-            name: Build project
-            run: cd VPVC && dotnet publish /p:PublishProfile=Properties/PublishProfiles/win10-x64.pubxml -o ../build-output
-        -
-            name: Setup Go
-            uses: actions/setup-go@v4
-        -
-            name: Install s2c via Go
-            run: go install github.com/klauspost/compress/s2/cmd/s2c@latest
-        -
-            name: Install exiftool
-            run: sudo apt-get install libimage-exiftool-perl -y
-        -
-            name: Checkout executable wrapper repo
-            uses: actions/checkout@v3
-            with:
-                repository: thatmarcel/vpvc-executable-wrapper
-                path: executable-wrapper
-                token: ${{ secrets.GH_PAT }}
-        -
-            name: Build executable wrapper
-            run: |
-                cd executable-wrapper
-                cp -R ../build-output "../VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)"
-                zip -0 -r app-archive.zip "../VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)"
-                s2c app-archive.zip
-                rm -f app-archive.zip
-                mkdir -p resources
-                mv app-archive.zip.s2 resources/
-                sed -i "s/{{ NumericVersion }}/$(exiftool -FileVersion -s -s -s ../build-output/VPVC.exe)/g" ./winres/winres.json
-                sed -i "s/{{ VersionString }}/$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)/g" ./winres/winres.json
-                go generate
-                mkdir -p ../upload/app-executables/
-                go build -ldflags -H=windowsgui -o "../upload/app-executables/VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)" vpvc-executable-wrapper
-                echo ${{ github.sha }} > ../upload/latest-app-commit.txt
-                echo "$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)" > ../upload/latest-app-version.txt
-        -
-            name: Upload to CDN
-            uses: ayeressian/bunnycdn-storage-deploy@v1.1.1
-            with:
-                source: "./upload"
-                storageZoneName: ${{ secrets.BUNNY_CDN_STORAGE_ZONE_NAME }}
-                accessKey: ${{ secrets.BUNNY_CDN_STORAGE_ZONE_KEY }}
-                pullZoneId: ${{ secrets.BUNNY_CDN_PULL_ZONE_ID }}
-                pullZoneAccessKey: ${{ secrets.BUNNY_CDN_PULL_ZONE_KEY }}
-                remove: "false"
-                purge: "true"
+            -
+                uses: actions/download-artifact@v3
+                with:
+                    name: app-build-output
+                    path: .
+            -
+                name: Setup Go
+                uses: actions/setup-go@v4
+            -
+                name: Install s2c via Go
+                run: go install github.com/klauspost/compress/s2/cmd/s2c@latest
+            -
+                name: Install exiftool
+                run: sudo apt-get install libimage-exiftool-perl -y
+            -
+                name: Checkout executable wrapper repo
+                uses: actions/checkout@v3
+                with:
+                    repository: thatmarcel/vpvc-executable-wrapper
+                    path: executable-wrapper
+                    token: ${{ secrets.GH_PAT }}
+            -
+                name: Build executable wrapper
+                run: |
+                    cd executable-wrapper
+                    cp -R ../build-output "../VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)"
+                    zip -0 -r app-archive.zip "../VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)"
+                    s2c app-archive.zip
+                    rm -f app-archive.zip
+                    mkdir -p resources
+                    mv app-archive.zip.s2 resources/
+                    sed -i "s/{{ NumericVersion }}/$(exiftool -FileVersion -s -s -s ../build-output/VPVC.exe)/g" ./winres/winres.json
+                    sed -i "s/{{ VersionString }}/$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)/g" ./winres/winres.json
+                    go generate
+                    mkdir -p ../upload/app-executables/
+                    go build -ldflags -H=windowsgui -o "../upload/app-executables/VPVC-$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)" vpvc-executable-wrapper
+                    echo ${{ github.sha }} > ../upload/latest-app-commit.txt
+                    echo "$(exiftool -ProductVersion -s -s -s ../build-output/VPVC.exe)" > ../upload/latest-app-version.txt
+            -
+                name: Upload to CDN
+                uses: ayeressian/bunnycdn-storage-deploy@v1.1.1
+                with:
+                    source: "./upload"
+                    storageZoneName: ${{ secrets.BUNNY_CDN_STORAGE_ZONE_NAME }}
+                    accessKey: ${{ secrets.BUNNY_CDN_STORAGE_ZONE_KEY }}
+                    pullZoneId: ${{ secrets.BUNNY_CDN_PULL_ZONE_ID }}
+                    pullZoneAccessKey: ${{ secrets.BUNNY_CDN_PULL_ZONE_KEY }}
+                    remove: "false"
+                    purge: "true"
