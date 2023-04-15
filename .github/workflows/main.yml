@@ -19,9 +19,10 @@ jobs:
                     Invoke-WebRequest -Uri $ReleaseInfo.assets.Where({ $_.name.EndsWith('License1.xml') }).browser_download_url -OutFile 'license.xml'
                     Invoke-WebRequest -Uri $ReleaseInfo.assets.Where({ $_.name.EndsWith('8wekyb3d8bbwe.msixbundle') }).browser_download_url -OutFile 'winget.msixbundle'
                     Add-AppxProvisionedPackage -Online -PackagePath winget.msixbundle -LicensePath license.xml -DependencyPackagePath VCLibs.appx
+                    sleep 15s
             -
                 name: Install WindowsAppSDK dependencies
-                run: sleep 15s; iex "$($env:LOCALAPPDATA)\Microsoft\WindowsApps\winget.exe install 'Visual Studio Enterprise 2022'  --override '--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs'"
+                run: iex "$($env:LOCALAPPDATA)\Microsoft\WindowsApps\winget.exe install 'Visual Studio Enterprise 2022'  --override '--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs'"
             -
                 name: Fetch dependencies
                 run: dotnet restore
