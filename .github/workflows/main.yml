@@ -21,7 +21,7 @@ jobs:
                     Add-AppxProvisionedPackage -Online -PackagePath winget.msixbundle -LicensePath license.xml -DependencyPackagePath VCLibs.appx
             -
                 name: Install WindowsAppSDK dependencies
-                run: winget install "Visual Studio Enterprise 2022"  --override "--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs"
+                run: iex "$($env:LOCALAPPDATA)\Microsoft\WindowsApps\winget.exe install 'Visual Studio Enterprise 2022'  --override '--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs'"
             -
                 name: Fetch dependencies
                 run: dotnet restore
