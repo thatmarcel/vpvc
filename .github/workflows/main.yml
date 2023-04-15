@@ -11,18 +11,13 @@ jobs:
         runs-on: windows-latest
         steps:
             - uses: actions/checkout@v3
+            - uses: MinoruSekine/setup-scoop@main
             -
-                name: Install Windows Package Manager
-                run: |
-                    Invoke-WebRequest -Uri 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx' -OutFile 'VCLibs.appx'
-                    $ReleaseInfo = Invoke-RestMethod 'https://api.github.com/repos/microsoft/winget-cli/releases/latest' -Headers @{ 'Authorization' = 'Bearer ${{ secrets.GH_PAT }}' }
-                    Invoke-WebRequest -Uri $ReleaseInfo.assets.Where({ $_.name.EndsWith('License1.xml') }).browser_download_url -OutFile 'license.xml'
-                    Invoke-WebRequest -Uri $ReleaseInfo.assets.Where({ $_.name.EndsWith('8wekyb3d8bbwe.msixbundle') }).browser_download_url -OutFile 'winget.msixbundle'
-                    Add-AppxProvisionedPackage -Online -PackagePath winget.msixbundle -LicensePath license.xml -DependencyPackagePath VCLibs.appx
-                    sleep 15s
+                name: Install WinGet
+                run: scoop install winget
             -
                 name: Install WindowsAppSDK dependencies
-                run: iex "$($env:LOCALAPPDATA)\Microsoft\WindowsApps\winget.exe install 'Visual Studio Enterprise 2022'  --override '--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs'"
+                run: winget install 'Visual Studio Enterprise 2022'  --override '--add Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cs'
             -
                 name: Fetch dependencies
                 run: dotnet restore
