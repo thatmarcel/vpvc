@@ -21,7 +21,7 @@ jobs:
             run: dotnet restore
         -
             name: Build project
-            run: cd VPVC && dotnet publish /p:PublishProfile=Properties/PublishProfiles/win10-x64.pubxml -o ../build-output
+            run: cd VPVC && dotnet publish /p:EnableWindowsTargeting=true /p:PublishProfile=Properties/PublishProfiles/win10-x64.pubxml -o ../build-output
         -
             name: Setup Go
             uses: actions/setup-go@v4
