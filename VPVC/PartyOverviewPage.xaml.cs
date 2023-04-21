@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using VPVC.BackendCommunication;
 using VPVC.MainInternals;
+using VPVC.ServerLocations;
 using VPVC.VoiceChat;
 
 namespace VPVC; 
@@ -74,7 +75,7 @@ public sealed partial class PartyOverviewPage: Page {
             return;
         }
 
-        joinCodeTextBlock.Text = party.joinCode;
+        joinCodeTextBlock.Text = ServerLocationsManager.SelectedLocationPartyJoinCodeLetterPrefix + party.joinCode;
 
         var newTeamOneParticipantInfos = party.otherParticipants
             .Where(participant => participant.teamIndex == 0)

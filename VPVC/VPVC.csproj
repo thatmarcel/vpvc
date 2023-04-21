@@ -17,7 +17,7 @@
 	<ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
 	<PlatformTarget>x64</PlatformTarget>
 	<VersionPrefix>1.0.0</VersionPrefix>
-	<VersionSuffix>RC30</VersionSuffix>
+	<VersionSuffix>RC31</VersionSuffix>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
 
@@ -28,6 +28,7 @@
     <Manifest Include="$(ApplicationManifest)" />
     <PackageReference Include="NAudio.WinMM" Version="2.1.0" />
     <PackageReference Include="NetCoreServer" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.Extensions" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />

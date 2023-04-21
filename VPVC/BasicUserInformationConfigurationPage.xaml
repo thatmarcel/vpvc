@@ -19,7 +19,9 @@
             <StackPanel Margin="0 24 0 0" Orientation="Horizontal">
                 <TextBox Width="200" HorizontalAlignment="Left" PlaceholderText="Creative name" x:Name="userDisplayNameTextBox" />
             
-                <Button Margin="8 0 0 0" Content="Continue" IsEnabled="False" x:Name="continueButton" Click="HandleContinueButtonClick" />
+                <Button Margin="8 0 12 0" Content="Continue" IsEnabled="False" x:Name="continueButton" Click="HandleContinueButtonClick" />
+                
+                <ProgressRing IsActive="False" Width="16" Height="16" x:Name="continueProgressRing" />
             </StackPanel>
         </StackPanel>
     </Border>

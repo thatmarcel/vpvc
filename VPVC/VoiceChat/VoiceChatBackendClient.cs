@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using LiteNetLib;
 using VPVC.MainInternals;
+using VPVC.ServerLocations;
 
 namespace VPVC.VoiceChat;
 
@@ -56,7 +57,7 @@ public class VoiceChatBackendClient {
         };
         
         client.Start();
-        client.Connect(Config.voiceChatBackendServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
+        client.Connect(ServerLocationsManager.SelectedVoiceChatServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
     }
 
     public void DisconnectAndStop() {
@@ -74,7 +75,7 @@ public class VoiceChatBackendClient {
             client.Stop();
             Thread.Sleep(1);
             client.Start();
-            client.Connect(Config.voiceChatBackendServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
+            client.Connect(ServerLocationsManager.SelectedVoiceChatServerHostname, Config.voiceChatBackendServerPort, "VPVC-Voice-Chat");
         }
     }
 

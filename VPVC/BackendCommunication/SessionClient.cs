@@ -6,6 +6,7 @@ using NetCoreServer;
 using ProtoBuf;
 using VPVC.BackendCommunication.Shared.ProtobufMessages;
 using VPVC.MainInternals;
+using VPVC.ServerLocations;
 
 namespace VPVC.BackendCommunication; 
 
@@ -15,7 +16,7 @@ public class SessionClient: WssClient {
 
     public override void OnWsConnecting(HttpRequest request) {
         request.SetBegin("GET", "/");
-        request.SetHeader("Host", Config.backendServerHostname);
+        request.SetHeader("Host", ServerLocationsManager.SelectedBackendServerHostname);
         request.SetHeader("Upgrade", "websocket");
         request.SetHeader("Origin", "http://localhost");
         request.SetHeader("Connection", "Upgrade");
@@ -40,6 +41,10 @@ public class SessionClient: WssClient {
         
         ConnectionManager.isConnected = false;
         
+        ResetListeners();
+    }
+
+    public static void ResetListeners() {
         App.RunInForeground(() => {
             ConnectionEventListeners.disconnected?.Invoke();
             

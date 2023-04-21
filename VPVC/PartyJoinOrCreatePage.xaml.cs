@@ -1,17 +1,35 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using VPVC.BackendCommunication;
 using VPVC.MainInternals;
+using VPVC.ServerLocations;
+using VPVC.ServerLocations.Types;
 
 namespace VPVC; 
 
 public sealed partial class PartyJoinOrCreatePage: Page {
+    // Variable is referenced in XAML
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    // ReSharper disable once MemberInitializerValueIgnored
+    private List<ServerLocation> availableServerLocations = new();
+    
     public PartyJoinOrCreatePage() {
         InitializeComponent();
 
         partyJoinCodeTextBox.TextChanged += HandlePartyJoinCodeTextBoxTextChanged;
+
+        ServerLocationsManager.onServerLocationsChanged = updatedServerLocations => {
+            availableServerLocations = updatedServerLocations;
+
+            if (updatedServerLocations.Count > 0) {
+                serverLocationSelectionComboBox.SelectedIndex = 0;
+            }
+        };
     }
 
     private void HandlePartyJoinCodeTextBoxTextChanged(object sender, RoutedEventArgs args) {
@@ -26,6 +44,17 @@ public sealed partial class PartyJoinOrCreatePage: Page {
         if (partyJoinCode.Length < Config.minPartyJoinCodeLength || partyJoinCode.Length > Config.maxPartyJoinCodeLength) {
             return;
         }
+
+        var partyServerLocation = ServerLocationsManager.FindServerLocationForPartyJoinCodeLetterPrefix(partyJoinCode.First().ToString());
+
+        if (partyServerLocation == null) {
+            ShowPartyJoinFailedErrorMessage();
+            return;
+        }
+
+        ServerLocationsManager.selectedServerLocation = partyServerLocation;
+
+        partyJoinCode = partyJoinCode.Substring(1);
         
         SetInputsEnabled(false);
         partyJoinProgressRing.IsActive = true;
@@ -65,6 +94,10 @@ public sealed partial class PartyJoinOrCreatePage: Page {
     private void HandlePartyCreateButtonClick(object sender, RoutedEventArgs e) {
         SetInputsEnabled(false);
         partyCreateProgressRing.IsActive = true;
+
+        ServerLocationsManager.selectedServerLocation = availableServerLocations.First(s =>
+            ReferenceEquals(s.identifier, serverLocationSelectionComboBox.SelectedValue)
+        );
         
         var hadBeenConnected = false;
 
@@ -119,7 +152,6 @@ public sealed partial class PartyJoinOrCreatePage: Page {
     }
     
     private void ShowPartyJoinFailedErrorMessage() {
-        Logger.Log("Page informed about join failed event.");
         this.ShowMessageDialog(
             "Joining party failed",
             "Something went wrong and joining the party failed. Please make sure the join code is correct and try again."
