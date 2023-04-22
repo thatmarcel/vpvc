@@ -19,7 +19,7 @@ public class ServerLocation {
     [JsonProperty(PropertyName = "voiceChatServerHostnames")]
     public List<string> voiceChatServerHostnames = new();
     
-    public int latencyInMilliseconds = -1;
+    public int latencyInMilliseconds = 10000;
     
     // Used in XAML
     // ReSharper disable once UnusedMember.Global
