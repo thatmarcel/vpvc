@@ -1,8 +1,8 @@
 ﻿namespace VPVC.GameCommunication; 
 
 public class ScreenInfo {
-    private string deviceId;
-    private string name;
+    private readonly string deviceId;
+    private readonly string name;
 
     // Used in XAML
     // ReSharper disable once UnusedMember.Global
