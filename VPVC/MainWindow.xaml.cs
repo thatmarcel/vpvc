@@ -11,9 +11,7 @@ public sealed partial class MainWindow: MicaWindow {
         
         Title = "";
 
-        if (!MicaController.IsSupported()) {
-            titleTextBlock.Margin = new Thickness(32, 24, 32, 0);
-        }
+        titleTextBlock.Margin = new Thickness(32, 24, 32, 0);
         
         this.ConfigureWindowWithSize(800, 650);
 

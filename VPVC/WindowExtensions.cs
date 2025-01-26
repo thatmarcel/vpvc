@@ -10,12 +10,6 @@ using WinRT.Interop;
 namespace VPVC;
 
 public static class WindowExtensions {
-    /* [DllImport("dwmapi.dll")]
-    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-
-    private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20; */
-    
-    private const int WM_GETICON = 0x007F;  
     private const int WM_SETICON = 0x0080;
     
     [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Auto)]  
@@ -26,8 +20,6 @@ public static class WindowExtensions {
         var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
         var appWindow = AppWindow.GetFromWindowId(windowId);
         
-        // appWindow.SetIcon(Path.Combine(Package.Current.InstalledLocation.Path, "Assets\\AppIcon.ico"));
-        
         var sExe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
         if (sExe != null) {
             var icon = System.Drawing.Icon.ExtractAssociatedIcon(sExe);
@@ -35,6 +27,15 @@ public static class WindowExtensions {
                 SendMessage(hWnd, WM_SETICON, 1, icon.Handle);
             }
         }
+        
+        appWindow.DefaultTitleBarShouldMatchAppModeTheme = true;
+
+        appWindow.Title = "VPVC";
+
+        appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+        
+        appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+        appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 
         var nativeWindow = window.As<IWindowNative>();
         var nativeWindowHandle = nativeWindow.WindowHandle;

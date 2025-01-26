@@ -60,13 +60,13 @@ public class ScreenCaptureManager {
         var frameHeight = acquiredTexture.Description.Height;
 
         var frameBitmap = new Bitmap(
-            frameWidth,
-            frameHeight,
+            (int) frameWidth,
+            (int) frameHeight,
             PixelFormat.Format32bppRgb
         );
 
         var frameBitmapData = frameBitmap.LockBits(
-            new Rectangle(0, 0, frameWidth, frameHeight),
+            new Rectangle(0, 0, (int) frameWidth, (int) frameHeight),
             ImageLockMode.WriteOnly,
             frameBitmap.PixelFormat
         );
@@ -131,8 +131,8 @@ public class ScreenCaptureManager {
             CPUAccessFlags = CpuAccessFlags.Read,
             BindFlags = BindFlags.None,
             Format = Format.B8G8R8A8_UNorm,
-            Width = outputWidth,
-            Height = outputHeight,
+            Width = (uint) outputWidth,
+            Height = (uint) outputHeight,
             MiscFlags = ResourceOptionFlags.None,
             MipLevels = 1,
             ArraySize = 1,
@@ -157,8 +157,8 @@ public class ScreenCaptureManager {
     }
 
     private Tuple<IDXGIAdapter, IDXGIOutput>? GetAdapterAndOutputForDeviceId(string deviceId) {
-        for (int adapterIndex = 0; dxgiFactory.EnumAdapters(adapterIndex, out var currentAdapter) == Result.Ok; adapterIndex++) {
-            for (int outputIndex = 0; currentAdapter.EnumOutputs(outputIndex, out var currentOutput) == Result.Ok; outputIndex++) {
+        for (int adapterIndex = 0; dxgiFactory.EnumAdapters((uint) adapterIndex, out var currentAdapter) == Result.Ok; adapterIndex++) {
+            for (int outputIndex = 0; currentAdapter.EnumOutputs((uint) outputIndex, out var currentOutput) == Result.Ok; outputIndex++) {
                 if (!currentOutput.Description.AttachedToDesktop) {
                     continue;
                 }
@@ -175,8 +175,8 @@ public class ScreenCaptureManager {
     public List<ScreenInfo> GetScreens() {
         var allScreens = new List<ScreenInfo>();
         
-        for (int adapterIndex = 0; dxgiFactory.EnumAdapters(adapterIndex, out var currentAdapter) == Result.Ok; adapterIndex++) {
-            for (int outputIndex = 0; currentAdapter.EnumOutputs(outputIndex, out var currentOutput) == Result.Ok; outputIndex++) {
+        for (int adapterIndex = 0; dxgiFactory.EnumAdapters((uint) adapterIndex, out var currentAdapter) == Result.Ok; adapterIndex++) {
+            for (int outputIndex = 0; currentAdapter.EnumOutputs((uint) outputIndex, out var currentOutput) == Result.Ok; outputIndex++) {
                 if (!currentOutput.Description.AttachedToDesktop) {
                     continue;
                 }
