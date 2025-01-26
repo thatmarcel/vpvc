@@ -3,8 +3,6 @@
 
 This project is still in early beta so expect bugs. It is built with the [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/).
 
-Distributed builds are wrapped in a custom program that extracts the required files on launch so only one executable needs to be downloaded by the user.
-
 ## How it works
 When you use VPVC, the app repeatedly takes a screenshot of your game and analyzes it to find out whether you're in the lobby, agent select or in-game, and your position on the map. This method of detecting your location isn't perfect but it ensures VPVC is safe to use and will not lead to any game bans.
 
