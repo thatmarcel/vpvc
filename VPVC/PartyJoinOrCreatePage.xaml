@@ -23,7 +23,7 @@
                 <TextBlock Text="using a join code" FontWeight="400" Opacity="0.7" FontSize="14" Margin="0 -2 0 0" />
                 
                 <StackPanel Orientation="Horizontal" Margin="0 24 0 0">
-                    <TextBox Width="150" HorizontalAlignment="Left" PlaceholderText="ABCDEF" CharacterCasing="Upper" x:Name="partyJoinCodeTextBox" />
+                    <TextBox Width="150" HorizontalAlignment="Left" PlaceholderText="ABCDEFG" CharacterCasing="Upper" x:Name="partyJoinCodeTextBox" />
                 
                     <Button Margin="8 0 12 0" Content="Join" Click="HandlePartyJoinButtonClick" IsEnabled="False" x:Name="partyJoinButton" />
                         

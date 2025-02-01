@@ -15,7 +15,7 @@
             </Border.Background>
             
             <StackPanel Orientation="Vertical" Margin="24 16 24 24">
-                <TextBlock Text="ABCDEF" FontWeight="600" FontSize="22" HorizontalAlignment="Right" x:Name="joinCodeTextBlock" />
+                <TextBlock Text="ABCDEFG" FontWeight="600" FontSize="22" HorizontalAlignment="Right" x:Name="joinCodeTextBlock" />
                 <TextBlock Text="Join code" FontWeight="400" Opacity="0.7" FontSize="14" Margin="0 -2 0 0" HorizontalAlignment="Right" />
             
                 <Grid Margin="0 24 0 0">
