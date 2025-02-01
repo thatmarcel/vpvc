@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using LiteNetLib;
+using VPVC.Helpers;
 using VPVC.MainInternals;
 using VPVC.ServerLocations;
 
@@ -45,11 +47,19 @@ public class VoiceChatBackendClient {
 
             var senderId = dataReader.GetString(4);
 
-            var receivedBytes = dataReader.GetRemainingBytes();
+            var receivedEncryptedBytes = dataReader.GetRemainingBytes();
 
-            if (senderId == null || receivedBytes == null) {
+            if (senderId == null || receivedEncryptedBytes == null) {
                 return;
             }
+            
+            var party = PartyManager.currentParty;
+
+            if (party == null) {
+                return;
+            }
+
+            var receivedBytes = EncryptionHelper.Decrypt(receivedEncryptedBytes, party.voiceChatEncryptionKey);
 
             lastAudioTimestampsForParticipantIds[senderId] = DateTime.Now.ToFileTime();
 
@@ -86,7 +96,13 @@ public class VoiceChatBackendClient {
             return;
         }
         
-        var infoBytes = Encoding.UTF8.GetBytes($"{party.joinCode}:{party.participantSelf.id}");
+        // Make sure the party code isn't directly sent through
+        // the potentially insecure voice chat transport channel
+        var partyIdentifierConstructionBytes = Encoding.UTF8.GetBytes($"{party.joinCode}:{party.voiceChatEncryptionKey}");
+        var partyIdentifierBytes = SHA256.HashData(partyIdentifierConstructionBytes);
+        var partyIdentifier = Convert.ToBase64String(partyIdentifierBytes);
+        
+        var infoBytes = Encoding.UTF8.GetBytes($"{partyIdentifier}:{party.participantSelf.id}");
         client.SendToAll(infoBytes, DeliveryMethod.ReliableOrdered);
         
         onConnected?.Invoke();
@@ -94,7 +110,15 @@ public class VoiceChatBackendClient {
     
     public void SendAudioBuffer(byte[] bytes) {
         if (isMatchedWithTarget) {
-            client.SendToAll(bytes, DeliveryMethod.Sequenced);
+            var party = PartyManager.currentParty;
+
+            if (party == null) {
+                return;
+            }
+
+            var encryptedBytes = EncryptionHelper.Encrypt(bytes, party.voiceChatEncryptionKey);
+            
+            client.SendToAll(encryptedBytes, DeliveryMethod.Sequenced);
         }
     }
 }

@@ -5,8 +5,8 @@ namespace VPVC.BackendCommunication;
 
 // These should mainly be used by the PartyManager
 
-public delegate void PartyEventListenerPartyCreateResultCallback(bool success, string? partyJoinCode, SerializablePartyParticipant? partyParticipantSelf);
-public delegate void PartyEventListenerPartyJoinResultCallback(bool success, SerializablePartyParticipant? partyParticipantSelf, List<SerializablePartyParticipant>? partyParticipants);
+public delegate void PartyEventListenerPartyCreateResultCallback(bool success, string? partyJoinCode, SerializablePartyParticipant? partyParticipantSelf, byte[]? voiceChatEncryptionKey);
+public delegate void PartyEventListenerPartyJoinResultCallback(bool success, SerializablePartyParticipant? partyParticipantSelf, List<SerializablePartyParticipant>? partyParticipants, byte[]? voiceChatEncryptionKey);
 public delegate void PartyEventListenerPartyParticipantsChangeCallback(SerializablePartyParticipant partyParticipantSelf, List<SerializablePartyParticipant> partyParticipants);
 public delegate void PartyEventListenerPartyParticipantStatesUpdateCallback(List<SerializablePartyParticipantState> partyParticipantStates);
 public delegate void PartyEventListenerIncomingWebRtcSignalingCallback(string sendingParticipantId, string signalingMessageType, string sdpContent);

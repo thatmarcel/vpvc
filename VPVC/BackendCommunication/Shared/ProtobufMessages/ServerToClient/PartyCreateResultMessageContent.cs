@@ -12,4 +12,7 @@ public class PartyCreateResultMessageContent {
     
     [ProtoMember(3)]
     public SerializablePartyParticipant? partyParticipantSelf { get; set; }
+    
+    [ProtoMember(4)]
+    public byte[]? voiceChatEncryptionKey { get; set; }
 }

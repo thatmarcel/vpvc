@@ -15,7 +15,8 @@ public class PartyCreateResultMessageHandler: IMessageHandler {
         PartyEventListeners.partyCreateResult?.Invoke(
             content.success,
             content.partyJoinCode,
-            content.partyParticipantSelf
+            content.partyParticipantSelf,
+            content.voiceChatEncryptionKey
         );
     }
 }

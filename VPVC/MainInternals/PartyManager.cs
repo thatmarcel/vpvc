@@ -58,10 +58,10 @@ public static class PartyManager {
         PartyEventSender.SendPartyJoin(ApplicationState.userDisplayName, partyJoinCode);
     }
 
-    private static void HandlePartyCreateResult(bool success, string? partyJoinCode, SerializablePartyParticipant? partyParticipantSelf) {
+    private static void HandlePartyCreateResult(bool success, string? partyJoinCode, SerializablePartyParticipant? partyParticipantSelf, byte[]? voiceChatEncryptionKey) {
         PartyEventListeners.partyCreateResult -= HandlePartyCreateResult;
 
-        if (!success || partyJoinCode == null || partyParticipantSelf == null) {
+        if (!success || partyJoinCode == null || partyParticipantSelf == null || voiceChatEncryptionKey == null) {
             ManagedEventListeners.partyCreateFailed?.Invoke();
             ConnectionManager.Disconnect();
             return;
@@ -69,16 +69,18 @@ public static class PartyManager {
 
         currentParty = new Party(
             partyJoinCode,
-            PartyParticipant.FromSerializable(partyParticipantSelf)
+            PartyParticipant.FromSerializable(partyParticipantSelf),
+            null,
+            voiceChatEncryptionKey
         );
 
         HandleSuccessfulPartyJoin();
     }
 
-    private static void HandlePartyJoinResult(bool success, SerializablePartyParticipant? partyParticipantSelf, List<SerializablePartyParticipant>? partyParticipants) {
+    private static void HandlePartyJoinResult(bool success, SerializablePartyParticipant? partyParticipantSelf, List<SerializablePartyParticipant>? partyParticipants, byte[]? voiceChatEncryptionKey) {
         PartyEventListeners.partyJoinResult -= HandlePartyJoinResult;
 
-        if (!success || partyParticipantSelf == null || partyParticipants == null || joinCodeOfPartyAttemptingToJoin == null) {
+        if (!success || partyParticipantSelf == null || partyParticipants == null || joinCodeOfPartyAttemptingToJoin == null || voiceChatEncryptionKey == null) {
             ManagedEventListeners.partyJoinFailed?.Invoke();
             ConnectionManager.Disconnect();
             return;
@@ -87,7 +89,8 @@ public static class PartyManager {
         currentParty = new Party(
             joinCodeOfPartyAttemptingToJoin,
             PartyParticipant.FromSerializable(partyParticipantSelf),
-            partyParticipants.Select(PartyParticipant.FromSerializable).ToList()
+            partyParticipants.Select(PartyParticipant.FromSerializable).ToList(),
+            voiceChatEncryptionKey
         );
 
         joinCodeOfPartyAttemptingToJoin = null;
