@@ -140,14 +140,14 @@ public sealed partial class PartyJoinOrCreatePage: Page {
     private void ShowConnectionFailedErrorMessage() {
         this.ShowMessageDialog(
             "Connection failed",
-            "Something went wrong and we couldn't connect to the backend server. Please make sure you're connected to the internet and try again."
+            "Something went wrong and we couldn't connect to the backend server. Please make sure you're connected to the internet or try a different server."
         );
     }
     
     private void ShowPartyCreateFailedErrorMessage() {
         this.ShowMessageDialog(
             "Creating party failed",
-            "Something went wrong and creating a new party failed. Please try again."
+            "Something went wrong and creating a new party failed. Please try again or contact the developer(s)."
         );
     }
     
