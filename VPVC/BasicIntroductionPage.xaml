@@ -21,7 +21,7 @@
                     For this app to be able to detect your in-game location, you need to have your minimap enabled with zoom set to 0.9, rotation to fixed, "Fixed Orientation" to "Based On Side" and "Keep Player Centered" to "Off", otherwise weird things will happen.
                     <LineBreak />
                     <LineBreak />
-                    For now, you'll also need to set your enemy highlight color to red or purple.
+                    You'll also need to set your enemy highlight color to red or purple.
                     <LineBreak />
                     <LineBreak />
                     Also, there might be some incompatibilities with Voicemeeter so if you are experiencing audio glitches or delay, try turning off Voicemeeter.
