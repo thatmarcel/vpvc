@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,7 +20,11 @@ public sealed partial class BasicIntroductionPage: Page {
 
         try {
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            versionTextBlock.Text = $"v{fileVersionInfo.ProductVersion}";
+            versionTextBlock.Text = $"v{
+                fileVersionInfo.ProductVersion?.Split("+").First()
+            }+{
+                string.Join("", fileVersionInfo.ProductVersion?.Split("+").Skip(1).FirstOrDefault()?.Take(7).ToArray() ?? "???????".ToCharArray())
+            }";
             
             // ReSharper disable once EmptyGeneralCatchClause
         } catch {}
