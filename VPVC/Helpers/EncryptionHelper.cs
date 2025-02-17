@@ -34,16 +34,17 @@ public class EncryptionHelper {
 
         aes.IV = data.Take(aes.IV.Length).ToArray();
         
-        using var memoryStream = new MemoryStream(data.Skip(aes.IV.Length).ToArray());
+        using var encryptedMemoryStream = new MemoryStream(data.Skip(aes.IV.Length).ToArray());
         
         using var cryptoStream = new CryptoStream(
-            memoryStream,
+            encryptedMemoryStream,
             aes.CreateDecryptor(),
             CryptoStreamMode.Read
         );
         
-        using var binaryReader = new BinaryReader(cryptoStream);
-
-        return binaryReader.ReadBytes(data.Length - aes.IV.Length);
+        using var plainMemoryStream = new MemoryStream();
+        cryptoStream.CopyTo(plainMemoryStream);
+        
+        return plainMemoryStream.ToArray();
     }
 }
