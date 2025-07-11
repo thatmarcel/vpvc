@@ -28,7 +28,7 @@ public static class WindowExtensions {
             }
         }
         
-        appWindow.DefaultTitleBarShouldMatchAppModeTheme = true;
+        appWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
 
         appWindow.Title = "VPVC";
 
